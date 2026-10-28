@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block title %}My Profile — FoodShare{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      
+      <div class="d-flex align-items-center justify-content-between mb-4">
+        <div>
+          <h3 class="fw-bold text-white mb-1">Account & Settings</h3>
+          <span class="badge {{ 'badge-success' if user.role == 'donor' else 'badge-warning' }} text-uppercase">
+            {{ user.role }} Account
+          </span>
+        </div>
+        <a href="javascript:history.back()" class="btn btn-sm btn-share-outline">
+          <i class="bi bi-arrow-left"></i> Back
+        </a>
+      </div>
+
+      <div class="row g-4">
+        <!-- Profile Details Card -->
+        <div class="col-md-7">
+          <div class="fs-card p-4">
+            <h5 class="fw-bold text-white mb-3"><i class="bi bi-person-lines-fill text-success me-2"></i>Profile Information</h5>
+            
+            <form method="POST" action="{{ url_for('auth.profile') }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              <input type="hidden" name="action" value="update_profile">
+
+              <div class="mb-3">
+                <label class="form-label">Email Address (Registered)</label>
+                <input type="email" class="form-control" value="{{ user.email }}" disabled style="opacity: 0.7;">
+                <span class="text-secondary small" style="font-size: 0.75rem;">Email cannot be changed directly.</span>
+              </div>
+
+              {% if user.role in ['donor', 'ngo'] %}
+                <div class="mb-3">
+                  <label class="form-label">Organization / Business Name</label>
+                  <input type="text" class="form-control" name="org_name" value="{{ user.org_name or '' }}" required>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Contact Person</label>
+                  <input type="text" class="form-control" name="contact_name" value="{{ user.contact_name or '' }}" required>
+                </div>
+              {% else %}
+                <div class="mb-3">
+                  <label class="form-label">Full Name</label>
+                  <input type="text" class="form-control" name="name" value="{{ user.name or '' }}" required>
+                </div>
+              {% endif %}
+
+              <div class="mb-3">
+                <label class="form-label">Phone Number</label>
+                <input type="tel" class="form-control" name="phone" value="{{ user.phone or '' }}" required>
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label">Pickup Address / Location</label>
+                <textarea class="form-control" name="address" rows="3" required>{{ user.address or '' }}</textarea>
+              </div>
+
+              <button type="submit" class="btn btn-share-green w-100">
+                Save Profile Changes
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Security / Password Card -->
+        <div class="col-md-5">
+          <div class="fs-card p-4">
+            <h5 class="fw-bold text-white mb-3"><i class="bi bi-shield-lock text-warning me-2"></i>Change Password</h5>
+
+            <form method="POST" action="{{ url_for('auth.profile') }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              <input type="hidden" name="action" value="change_password">
+
+              <div class="mb-3">
+                <label class="form-label">Current Password</label>
+                <input type="password" class="form-control" name="old_password" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">New Password (Min 6 chars)</label>
+                <input type="password" class="form-control" name="new_password" required minlength="6">
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label">Confirm New Password</label>
+                <input type="password" class="form-control" name="confirm_password" required minlength="6">
+              </div>
+
+              <button type="submit" class="btn btn-share-outline w-100">
+                Update Password
+              </button>
+            </form>
+
+            <div class="mt-4 p-3 rounded" style="background: var(--bg-elevated); border: 1px solid var(--border-color);">
+              <div class="small fw-bold text-white mb-1"><i class="bi bi-shield-check text-success me-1"></i> Security Status</div>
+              <div class="small text-secondary">
+                Account Status: <span class="badge bg-success-subtle text-success">{{ user.status or 'Active' }}</span><br>
+                Verification: <span class="badge bg-info-subtle text-info">Verified</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

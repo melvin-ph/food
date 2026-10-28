@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+
+{% block title %}Login — FoodShare Portal{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-9">
+      
+      <!-- Role Selector Header Tabs -->
+      <div class="text-center mb-4">
+        <h2 class="fw-bold text-white mb-2">Welcome Back to FoodShare</h2>
+        <p class="text-secondary small">Select your portal below to sign in to your dashboard.</p>
+        
+        <div class="btn-group p-1 rounded-pill" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+          <button type="button" class="btn btn-sm rounded-pill px-4 py-2 {% if active_tab == 'donor' or not active_tab %}btn-share-green{% else %}btn-share-outline{% endif %}" id="btnTabDonor" onclick="switchLoginTab('donor')">
+            <i class="bi bi-box-seam me-1"></i> Donor Portal
+          </button>
+          <button type="button" class="btn btn-sm rounded-pill px-4 py-2 {% if active_tab in ['ngo', 'recipient'] %}btn-share-orange{% else %}btn-share-outline{% endif %}" id="btnTabRecipient" onclick="switchLoginTab('recipient')">
+            <i class="bi bi-heart-fill me-1"></i> NGO / Recipient
+          </button>
+          <button type="button" class="btn btn-sm rounded-pill px-4 py-2 {% if active_tab == 'admin' %}btn-share-green{% else %}btn-share-outline{% endif %}" id="btnTabAdmin" onclick="switchLoginTab('admin')">
+            <i class="bi bi-shield-lock me-1"></i> Admin
+          </button>
+        </div>
+      </div>
+
+      <div class="row g-4 justify-content-center">
+        <!-- Form Container -->
+        <div class="col-md-7 col-lg-6">
+          <div class="fs-card p-4 p-md-5">
+            
+            <!-- Dynamic Form Header -->
+            <div class="text-center mb-4" id="loginHeader">
+              <div class="brand-icon mx-auto mb-3" style="width: 48px; height: 48px; font-size: 1.5rem;">
+                <i class="bi bi-hand-index-thumb-fill" style="transform: rotate(-45deg);"></i>
+              </div>
+              <h3 class="fw-bold text-white mb-1" id="tabTitle">Donor Login</h3>
+              <p class="text-secondary small" id="tabSubtitle">Log in to donate surplus food and make a difference.</p>
+            </div>
+
+            <form method="POST" action="{{ url_for('auth.login', next=request.args.get('next')) }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+              <!-- Email Field -->
+              <div class="mb-3">
+                <label for="loginEmail" class="form-label">Email Address</label>
+                <div class="input-group">
+                  <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-envelope"></i></span>
+                  <input type="email" class="form-control" id="loginEmail" name="email" value="{{ email or '' }}" placeholder="name@organization.com" required autocomplete="email">
+                </div>
+              </div>
+
+              <!-- Password Field -->
+              <div class="mb-3">
+                <div class="d-flex justify-content-between align-items-center">
+                  <label for="loginPassword" class="form-label">Password</label>
+                  <a href="#" class="small text-secondary text-decoration-none" onclick="alert('For development testing, please use the sample demo credentials below or reset via Admin.'); return false;">Forgot password?</a>
+                </div>
+                <div class="input-group">
+                  <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-lock"></i></span>
+                  <input type="password" class="form-control" id="loginPassword" name="password" placeholder="••••••••" required autocomplete="current-password">
+                  <button class="btn btn-outline-secondary border-secondary toggle-password-btn" type="button" data-target="#loginPassword">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Remember Me -->
+              <div class="mb-4 form-check">
+                <input type="checkbox" class="form-check-input" id="rememberMe" name="remember" checked>
+                <label class="form-check-label text-secondary small" for="rememberMe">Remember me for 30 days</label>
+              </div>
+
+              <!-- Submit Button -->
+              <button type="submit" class="btn w-100 py-2 fw-bold" id="btnLoginSubmit" style="background: var(--green-primary); color: #071308;">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Login
+              </button>
+            </form>
+
+            <hr class="my-4" style="border-color: var(--border-color);">
+
+            <!-- Register Redirect Links -->
+            <div class="text-center" id="registerLinks">
+              <span class="text-secondary small">New to FoodShare?</span>
+              <div class="mt-2 d-flex flex-wrap gap-2 justify-content-center">
+                <a href="{{ url_for('auth.register', role='donor') }}" class="btn btn-sm btn-share-outline">Register as Donor</a>
+                <a href="{{ url_for('auth.register', role='ngo') }}" class="btn btn-sm btn-share-outline">Register as NGO</a>
+                <a href="{{ url_for('auth.register', role='recipient') }}" class="btn btn-sm btn-share-outline">Register as Individual</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Demo Accounts Helper Sidebar -->
+        <div class="col-md-5 col-lg-5">
+          <div class="fs-card p-4 h-100">
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <i class="bi bi-lightning-charge-fill text-warning fs-5"></i>
+              <h5 class="fw-bold text-white mb-0">1-Click Test Login</h5>
+            </div>
+            <p class="text-secondary small mb-3">
+              Click any sample account to autofill your credentials immediately:
+            </p>
+
+            <div class="d-flex flex-column gap-2">
+              <!-- Donor Button -->
+              <button type="button" class="btn btn-share-outline text-start p-3 w-100 btn-fill-demo" data-email="donor@foodshare.com" data-pass="Donor123!" onclick="switchLoginTab('donor')">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle mb-1">Donor</span>
+                    <div class="text-white fw-bold small">Hotel Grand Plaza</div>
+                    <div class="text-secondary" style="font-size: 0.78rem;">donor@foodshare.com</div>
+                  </div>
+                  <i class="bi bi-box-arrow-in-right text-success fs-5"></i>
+                </div>
+              </button>
+
+              <!-- NGO Button -->
+              <button type="button" class="btn btn-share-outline text-start p-3 w-100 btn-fill-demo" data-email="ngo@foodshare.com" data-pass="Ngo123!" onclick="switchLoginTab('recipient')">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <span class="badge bg-warning-subtle text-warning border border-warning-subtle mb-1">NGO</span>
+                    <div class="text-white fw-bold small">Helping Hands NGO</div>
+                    <div class="text-secondary" style="font-size: 0.78rem;">ngo@foodshare.com</div>
+                  </div>
+                  <i class="bi bi-box-arrow-in-right text-warning fs-5"></i>
+                </div>
+              </button>
+
+              <!-- Individual Recipient Button -->
+              <button type="button" class="btn btn-share-outline text-start p-3 w-100 btn-fill-demo" data-email="user@foodshare.com" data-pass="User123!" onclick="switchLoginTab('recipient')">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <span class="badge bg-info-subtle text-info border border-info-subtle mb-1">Recipient</span>
+                    <div class="text-white fw-bold small">Priya Sharma</div>
+                    <div class="text-secondary" style="font-size: 0.78rem;">user@foodshare.com</div>
+                  </div>
+                  <i class="bi bi-box-arrow-in-right text-info fs-5"></i>
+                </div>
+              </button>
+
+              <!-- Administrator Button -->
+              <button type="button" class="btn btn-share-outline text-start p-3 w-100 btn-fill-demo" data-email="admin@foodshare.com" data-pass="Admin123!" onclick="switchLoginTab('admin')">
+                <div class="d-flex justify-content-between align-items-center">
+                  <div>
+                    <span class="badge bg-danger-subtle text-danger border border-danger-subtle mb-1">Administrator</span>
+                    <div class="text-white fw-bold small">Platform Admin</div>
+                    <div class="text-secondary" style="font-size: 0.78rem;">admin@foodshare.com</div>
+                  </div>
+                  <i class="bi bi-shield-check text-danger fs-5"></i>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function switchLoginTab(role) {
+  const title = document.getElementById('tabTitle');
+  const subtitle = document.getElementById('tabSubtitle');
+  const submitBtn = document.getElementById('btnLoginSubmit');
+  const btnDonor = document.getElementById('btnTabDonor');
+  const btnRecipient = document.getElementById('btnTabRecipient');
+  const btnAdmin = document.getElementById('btnTabAdmin');
+
+  // Reset classes
+  btnDonor.className = "btn btn-sm rounded-pill px-4 py-2 btn-share-outline";
+  btnRecipient.className = "btn btn-sm rounded-pill px-4 py-2 btn-share-outline";
+  btnAdmin.className = "btn btn-sm rounded-pill px-4 py-2 btn-share-outline";
+
+  if (role === 'donor') {
+    title.textContent = 'Donor Login';
+    subtitle.textContent = 'Log in to donate surplus food and make a difference.';
+    submitBtn.style.background = 'var(--green-primary)';
+    submitBtn.style.color = '#071308';
+    btnDonor.className = "btn btn-sm rounded-pill px-4 py-2 btn-share-green";
+  } else if (role === 'recipient') {
+    title.textContent = 'NGO / Recipient Login';
+    subtitle.textContent = 'Log in to request and receive food donations.';
+    submitBtn.style.background = 'var(--orange-warm)';
+    submitBtn.style.color = '#ffffff';
+    btnRecipient.className = "btn btn-sm rounded-pill px-4 py-2 btn-share-orange";
+  } else if (role === 'admin') {
+    title.textContent = 'Administrator Login';
+    subtitle.textContent = 'Platform oversight and system management.';
+    submitBtn.style.background = 'var(--state-error)';
+    submitBtn.style.color = '#ffffff';
+    btnAdmin.className = "btn btn-sm rounded-pill px-4 py-2 btn-share-outline text-danger border-danger";
+  }
+}
+// Init tab on load
+document.addEventListener('DOMContentLoaded', function() {
+  const activeRole = "{{ active_tab or 'donor' }}";
+  switchLoginTab(activeRole);
+});
+</script>
+{% endblock %}

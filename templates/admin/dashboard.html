@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+
+{% block title %}Administrator Console — FoodShare{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <!-- Admin Sidebar -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-heading">Admin Operations</div>
+    <a href="{{ url_for('admin.dashboard') }}" class="sidebar-nav-item active">
+      <i class="bi bi-speedometer2"></i> Dashboard
+    </a>
+    <a href="{{ url_for('admin.users') }}" class="sidebar-nav-item">
+      <i class="bi bi-people"></i> Manage Users
+    </a>
+    <a href="{{ url_for('admin.donations') }}" class="sidebar-nav-item">
+      <i class="bi bi-box-seam"></i> Food Listings
+    </a>
+    <a href="{{ url_for('admin.requests') }}" class="sidebar-nav-item">
+      <i class="bi bi-inbox"></i> Redistribution Requests
+    </a>
+    <a href="{{ url_for('admin.reported_listings') }}" class="sidebar-nav-item">
+      <i class="bi bi-flag"></i> Reported Listings
+      {% if recent_reports %}
+        <span class="badge bg-danger ms-auto">{{ recent_reports | length }}</span>
+      {% endif %}
+    </a>
+    <a href="{{ url_for('admin.categories') }}" class="sidebar-nav-item">
+      <i class="bi bi-tags"></i> Food Categories
+    </a>
+    <a href="{{ url_for('admin.audit_logs') }}" class="sidebar-nav-item">
+      <i class="bi bi-journal-text"></i> Audit Logs
+    </a>
+    <a href="{{ url_for('admin.settings') }}" class="sidebar-nav-item">
+      <i class="bi bi-sliders"></i> Platform Settings
+    </a>
+
+    <div class="sidebar-heading mt-4">Account</div>
+    <a href="{{ url_for('auth.logout') }}" class="sidebar-nav-item text-danger">
+      <i class="bi bi-box-arrow-right"></i> Logout
+    </a>
+  </aside>
+
+  <!-- Admin Main -->
+  <main class="dashboard-main">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+      <div>
+        <h2 class="fw-bold text-white mb-1">Administrator Oversight Portal</h2>
+        <p class="text-secondary small mb-0">System health, redistribution statistics, user verification, and platform integrity.</p>
+      </div>
+      <div>
+        <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-3 py-2">
+          <i class="bi bi-shield-check me-1"></i> Root Administrator
+        </span>
+      </div>
+    </div>
+
+    <!-- Platform Metrics (Calculated from actual database records) -->
+    <div class="row g-3 mb-4">
+      <div class="col-sm-6 col-lg-3">
+        <div class="fs-card p-3">
+          <div class="text-secondary small mb-1">Total Users</div>
+          <div class="fs-2 fw-bold text-white">{{ metrics.total_users }}</div>
+          <div class="small text-secondary mt-1">
+            <span class="text-success">{{ metrics.total_donors }} Donors</span> • 
+            <span class="text-warning">{{ metrics.total_ngos }} NGOs</span> • 
+            <span class="text-info">{{ metrics.total_recipients }} Recipients</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-lg-3">
+        <div class="fs-card p-3">
+          <div class="text-secondary small mb-1">Active Food Listings</div>
+          <div class="fs-2 fw-bold text-success">{{ metrics.active_donations }}</div>
+          <div class="small text-secondary mt-1">Of {{ metrics.total_donations }} all-time published</div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-lg-3">
+        <div class="fs-card p-3">
+          <div class="text-secondary small mb-1">Pending Requests</div>
+          <div class="fs-2 fw-bold text-warning">{{ metrics.pending_requests }}</div>
+          <div class="small text-secondary mt-1">Awaiting donor review</div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-lg-3">
+        <div class="fs-card p-3">
+          <div class="text-secondary small mb-1">Food Redistributed</div>
+          <div class="fs-2 fw-bold text-info">{{ metrics.redistributed_qty }} kg</div>
+          <div class="small text-secondary mt-1">Completed collections</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4 mb-4">
+      <div class="col-lg-7">
+        <div class="fs-card p-4 h-100">
+          <h5 class="fw-bold text-white mb-3">Redistribution Activity & Donations</h5>
+          <div style="height: 260px; position: relative;">
+            <canvas id="monthlyActivityChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-5">
+        <div class="fs-card p-4 h-100">
+          <h5 class="fw-bold text-white mb-3">Surplus Food Categories</h5>
+          <div style="height: 260px; position: relative;">
+            <canvas id="categoryDonutChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Logs & Reported Listings -->
+    <div class="row g-4">
+      <div class="col-lg-6">
+        <div class="fs-card p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-white mb-0">System Audit Trail</h5>
+            <a href="{{ url_for('admin.audit_logs') }}" class="small text-success text-decoration-none">View All</a>
+          </div>
+          <div class="table-responsive">
+            <table class="table-fs">
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Action</th>
+                  <th>Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if recent_logs %}
+                  {% for log in recent_logs %}
+                    <tr>
+                      <td class="small text-secondary">{{ log.created_at | format_datetime }}</td>
+                      <td><span class="badge bg-dark border border-secondary text-secondary">{{ log.action }}</span></td>
+                      <td class="small text-white text-truncate" style="max-width: 200px;">{{ log.details }}</td>
+                    </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr><td colspan="3" class="text-center py-3 text-secondary">No audit logs recorded yet.</td></tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div class="fs-card p-4">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-white mb-0">Recent Listings & Safety Reports</h5>
+            <a href="{{ url_for('admin.reported_listings') }}" class="small text-danger text-decoration-none">Review Reports</a>
+          </div>
+          <div class="table-responsive">
+            <table class="table-fs">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Donor</th>
+                  <th>Quantity</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if recent_donations %}
+                  {% for d in recent_donations %}
+                    <tr>
+                      <td class="fw-bold text-white">{{ d.title }}</td>
+                      <td class="small text-secondary">{{ d.donor_name }}</td>
+                      <td>{{ d.remaining_quantity }} {{ d.unit }}</td>
+                      <td><span class="{{ d.status | status_badge }}">{{ d.status }}</span></td>
+                    </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr><td colspan="4" class="text-center py-3 text-secondary">No donations listed.</td></tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Monthly Activity Chart
+  const actCtx = document.getElementById('monthlyActivityChart');
+  if (actCtx) {
+    new Chart(actCtx, {
+      type: 'line',
+      data: {
+        labels: {{ chart_data.monthly.labels | tojson }},
+        datasets: [
+          {
+            label: 'Listings Created',
+            data: {{ chart_data.monthly.donations | tojson }},
+            borderColor: '#39D353',
+            backgroundColor: 'rgba(57, 211, 83, 0.1)',
+            tension: 0.3,
+            fill: true
+          },
+          {
+            label: 'Completed Collections',
+            data: {{ chart_data.monthly.collected | tojson }},
+            borderColor: '#FF8A24',
+            backgroundColor: 'rgba(255, 138, 36, 0.1)',
+            tension: 0.3,
+            fill: true
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { labels: { color: '#B9C2BB' } }
+        },
+        scales: {
+          x: { grid: { display: false }, ticks: { color: '#B9C2BB' } },
+          y: { grid: { color: '#303A32' }, ticks: { color: '#B9C2BB' }, beginAtZero: true }
+        }
+      }
+    });
+  }
+
+  // Category Donut Chart
+  const catCtx = document.getElementById('categoryDonutChart');
+  if (catCtx) {
+    new Chart(catCtx, {
+      type: 'doughnut',
+      data: {
+        labels: {{ chart_data.categories.labels | tojson }},
+        datasets: [{
+          data: {{ chart_data.categories.counts | tojson }},
+          backgroundColor: ['#39D353', '#FF8A24', '#38BDF8', '#8B5CF6', '#F5B942', '#EF4444'],
+          borderWidth: 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { color: '#B9C2BB' } }
+        }
+      }
+    });
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+
+{% block title %}Donor Dashboard — FoodShare{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <!-- Donor Sidebar Navigation (matches mockup) -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-heading">Donor Portal</div>
+    
+    <a href="{{ url_for('donor.dashboard') }}" class="sidebar-nav-item active">
+      <i class="bi bi-grid-fill"></i> Dashboard
+    </a>
+    <a href="{{ url_for('donor.donations') }}" class="sidebar-nav-item">
+      <i class="bi bi-box-seam"></i> My Donations
+    </a>
+    <a href="{{ url_for('donor.create') }}" class="sidebar-nav-item">
+      <i class="bi bi-plus-circle"></i> Add New Donation
+    </a>
+    <a href="{{ url_for('donor.requests') }}" class="sidebar-nav-item">
+      <i class="bi bi-inbox"></i> Donation Requests
+      {% if stats.pending_requests > 0 %}
+        <span class="badge bg-warning text-dark ms-auto">{{ stats.pending_requests }}</span>
+      {% endif %}
+    </a>
+    <a href="{{ url_for('donor.requests', status='Approved') }}" class="sidebar-nav-item">
+      <i class="bi bi-truck"></i> Pickup & Delivery
+    </a>
+    <a href="{{ url_for('donor.reports') }}" class="sidebar-nav-item">
+      <i class="bi bi-bar-chart-line"></i> Impact Reports
+    </a>
+
+    <div class="sidebar-heading mt-4">Account</div>
+    <a href="{{ url_for('auth.profile') }}" class="sidebar-nav-item">
+      <i class="bi bi-person"></i> Profile
+    </a>
+    <a href="{{ url_for('auth.profile') }}" class="sidebar-nav-item">
+      <i class="bi bi-gear"></i> Settings
+    </a>
+    <a href="{{ url_for('auth.logout') }}" class="sidebar-nav-item text-danger">
+      <i class="bi bi-box-arrow-right"></i> Logout
+    </a>
+  </aside>
+
+  <!-- Main Dashboard Content -->
+  <main class="dashboard-main">
+    
+    <!-- Header with user profile badge -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+      <div>
+        <h2 class="fw-bold text-white mb-1">Donor Dashboard</h2>
+        <p class="text-secondary small mb-0">Manage your food donations and see the impact you create.</p>
+      </div>
+
+      <div class="d-flex align-items-center gap-3">
+        <a href="{{ url_for('donor.create') }}" class="btn btn-share-green">
+          <i class="bi bi-plus-lg"></i> Add New Donation
+        </a>
+        <div class="d-flex align-items-center gap-2 p-2 rounded" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+          <div class="rounded-circle bg-success text-dark d-flex align-items-center justify-content-center fw-bold" style="width: 36px; height: 36px;">
+            {{ (user.org_name or 'D')[:2].upper() }}
+          </div>
+          <div class="pe-2">
+            <div class="small fw-bold text-white lh-1">{{ user.org_name or user.contact_name }}</div>
+            <span class="badge bg-success-subtle text-success p-0" style="font-size: 0.72rem;">Donor</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Metrics Cards (Matching mockup: Total, Collected, Pending, Cancelled) -->
+    <div class="row g-3 mb-4">
+      <!-- Total Donations -->
+      <div class="col-sm-6 col-xl-3">
+        <div class="fs-card d-flex align-items-center justify-content-between p-3">
+          <div>
+            <div class="text-secondary small mb-1">Total Donations</div>
+            <div class="display-6 fw-bold text-white">{{ stats.total_donations }}</div>
+          </div>
+          <div class="stat-icon" style="background: rgba(57, 211, 83, 0.15); color: var(--green-primary); border-color: rgba(57, 211, 83, 0.3);">
+            <i class="bi bi-box-seam"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collected -->
+      <div class="col-sm-6 col-xl-3">
+        <div class="fs-card d-flex align-items-center justify-content-between p-3">
+          <div>
+            <div class="text-secondary small mb-1">Collected</div>
+            <div class="display-6 fw-bold text-white">{{ stats.collected_donations }}</div>
+          </div>
+          <div class="stat-icon" style="background: rgba(57, 211, 83, 0.15); color: var(--green-primary); border-color: rgba(57, 211, 83, 0.3);">
+            <i class="bi bi-check2-circle"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending -->
+      <div class="col-sm-6 col-xl-3">
+        <div class="fs-card d-flex align-items-center justify-content-between p-3">
+          <div>
+            <div class="text-secondary small mb-1">Pending Requests</div>
+            <div class="display-6 fw-bold text-white">{{ stats.pending_requests }}</div>
+          </div>
+          <div class="stat-icon" style="background: rgba(245, 185, 66, 0.15); color: var(--state-warning); border-color: rgba(245, 185, 66, 0.3);">
+            <i class="bi bi-clock-history"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cancelled -->
+      <div class="col-sm-6 col-xl-3">
+        <div class="fs-card d-flex align-items-center justify-content-between p-3">
+          <div>
+            <div class="text-secondary small mb-1">Cancelled</div>
+            <div class="display-6 fw-bold text-white">{{ stats.cancelled_donations }}</div>
+          </div>
+          <div class="stat-icon" style="background: rgba(239, 68, 68, 0.15); color: var(--state-error); border-color: rgba(239, 68, 68, 0.3);">
+            <i class="bi bi-x-circle"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Donations Table (Matching Mockup) -->
+    <div class="fs-card p-4 mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-white mb-0">Recent Donations</h5>
+        <a href="{{ url_for('donor.donations') }}" class="small text-decoration-none" style="color: var(--green-primary);">View All</a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table-fs">
+          <thead>
+            <tr>
+              <th>Food Item</th>
+              <th>Quantity</th>
+              <th>Date</th>
+              <th>Status</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if donations %}
+              {% for d in donations %}
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center gap-3">
+                      <img src="{{ d.image_path or url_for('static', filename='images/prepared-meals.jpg') }}" alt="{{ d.title }}" class="rounded" style="width: 48px; height: 48px; object-fit: cover;">
+                      <div>
+                        <div class="fw-bold text-white">{{ d.title }}</div>
+                        <span class="text-secondary small">{{ d.category }}</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <span class="fw-semibold text-white">{{ d.quantity }} {{ d.unit }}</span>
+                    {% if d.remaining_quantity < d.quantity %}
+                      <div class="small text-secondary">{{ d.remaining_quantity }} {{ d.unit }} left</div>
+                    {% endif %}
+                  </td>
+                  <td>{{ d.created_at | format_date }}</td>
+                  <td>
+                    <span class="{{ d.status | status_badge }}">{{ d.status }}</span>
+                  </td>
+                  <td class="text-end">
+                    <a href="{{ url_for('donations.detail', donation_id=d._id) }}" class="btn btn-sm btn-share-outline">
+                      View
+                    </a>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="5" class="text-center py-4 text-secondary">
+                  No food donations listed yet. Click <strong>"Add New Donation"</strong> above to publish your first surplus food!
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Pending Incoming Requests Alert / Table -->
+    {% if pending_requests %}
+      <div class="fs-card p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-bell-fill text-warning"></i>
+            <h5 class="fw-bold text-white mb-0">Pending Requests Needing Review</h5>
+          </div>
+          <a href="{{ url_for('donor.requests') }}" class="small text-warning text-decoration-none">Manage Requests</a>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table-fs">
+            <thead>
+              <tr>
+                <th>Recipient / NGO</th>
+                <th>Donation Item</th>
+                <th>Requested Qty</th>
+                <th>Pickup Time</th>
+                <th class="text-end">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for req in pending_requests %}
+                <tr>
+                  <td>
+                    <div class="fw-bold text-white">{{ req.recipient_name }}</div>
+                    <span class="badge bg-secondary text-uppercase" style="font-size: 0.68rem;">{{ req.recipient_role }}</span>
+                  </td>
+                  <td>{{ req.donation_title }}</td>
+                  <td class="fw-bold text-warning">{{ req.requested_quantity }} {{ req.unit }}</td>
+                  <td>{{ req.intended_pickup_time or 'Standard Pickup Window' }}</td>
+                  <td class="text-end">
+                    <div class="d-inline-flex gap-2">
+                      <form method="POST" action="{{ url_for('donor.review_req', request_id=req._id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <input type="hidden" name="action" value="approve">
+                        <button type="submit" class="btn btn-sm btn-share-green py-1 px-3">Accept</button>
+                      </form>
+                      <form method="POST" action="{{ url_for('donor.review_req', request_id=req._id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <input type="hidden" name="action" value="reject">
+                        <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-3">Decline</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    {% endif %}
+
+  </main>
+</div>
+{% endblock %}

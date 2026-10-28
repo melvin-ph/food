@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Food Safety & Redistribution Guidelines — FoodShare{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 900px;">
+  
+  <div class="text-center mb-5">
+    <span class="badge px-3 py-1 mb-2" style="background: rgba(57, 211, 83, 0.15); color: var(--green-primary); border: 1px solid rgba(57, 211, 83, 0.3);">
+      Safe Redistribution Protocols
+    </span>
+    <h1 class="display-5 fw-bold text-white">Food Safety & Hygiene Standards</h1>
+    <p class="text-secondary mx-auto">
+      Protecting recipients, community kitchens, and hospitality donors through strict adherence to hygiene, temperature control, and transparency.
+    </p>
+  </div>
+
+  <!-- Mandatory Food Safety Disclaimer -->
+  <div class="p-4 mb-5 rounded" style="background: rgba(245, 185, 66, 0.08); border: 1px solid rgba(245, 185, 66, 0.3);">
+    <div class="d-flex align-items-start gap-3">
+      <i class="bi bi-exclamation-triangle-fill fs-3 text-warning"></i>
+      <div>
+        <h5 class="fw-bold text-warning mb-1">Important Safety Disclaimer</h5>
+        <p class="text-white small mb-0">
+          FoodShare is a technological facilitation platform connecting food providers with charitable entities and recipients. FoodShare does not inspect or independently certify food items. Donors legally certify that listed surplus items were prepared under sanitary conditions and comply with local health codes. Recipients must inspect items upon collection and adhere to proper food storage and reheating standards.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="fs-card p-4 p-md-5 mb-4">
+    <h3 class="fw-bold text-white mb-3">1. Donor Responsibilities & Standards</h3>
+    <ul class="text-secondary small mb-4 d-flex flex-column gap-2">
+      <li><strong>Freshness & Shelf Life:</strong> Only donate food that was prepared on the same day or is well within its labeled "Best-Before" or "Use-By" date.</li>
+      <li><strong>Temperature Control:</strong> Hot foods must be held at or above 65°C (149°F). Chilled perishable foods must be maintained below 4°C (40°F).</li>
+      <li><strong>Allergen Disclosures:</strong> Clearly declare common allergens including peanuts, tree nuts, dairy, soy, gluten, shell fish, and eggs on every listing.</li>
+      <li><strong>Packaging:</strong> Surplus meals must be sealed in clean, food-grade containers, aluminum foil trays, or insulated food-safe boxes to prevent contamination during transit.</li>
+      <li><strong>Listing Cancellation:</strong> If any food is suspected to have spoiled or missed safe handling windows, the donor must immediately cancel the listing on the portal.</li>
+    </ul>
+
+    <h3 class="fw-bold text-white mb-3">2. Recipient & NGO Collection Guidelines</h3>
+    <ul class="text-secondary small mb-4 d-flex flex-column gap-2">
+      <li><strong>Prompt Collection:</strong> Arrive strictly within the donor's agreed pickup window to maintain cold/hot chain integrity.</li>
+      <li><strong>Transport Hygiene:</strong> Utilize clean insulated delivery bags, thermal coolers, or food-grade storage crates during transport.</li>
+      <li><strong>Visual & Sensory Check:</strong> Always inspect packaging seals, aroma, and temperature before accepting custody of surplus food.</li>
+      <li><strong>Immediate Reheating or Chilling:</strong> Cooked food should be reheated thoroughly to at least 74°C (165°F) before consumption or refrigerated immediately.</li>
+    </ul>
+
+    <h3 class="fw-bold text-white mb-3">3. Permitted vs. Restricted Foods</h3>
+    <div class="table-responsive">
+      <table class="table-fs">
+        <thead>
+          <tr>
+            <th>Permitted Surplus Items</th>
+            <th>Prohibited Items</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-success"><i class="bi bi-check-circle me-1"></i> Fresh commercial banquet & catering surplus</td>
+            <td class="text-danger"><i class="bi bi-x-circle me-1"></i> Plate waste or half-eaten patron leftovers</td>
+          </tr>
+          <tr>
+            <td class="text-success"><i class="bi bi-check-circle me-1"></i> Intact fresh vegetables, fruits, and produce</td>
+            <td class="text-danger"><i class="bi bi-x-circle me-1"></i> Dented, bloated, or unsealed canned goods</td>
+          </tr>
+          <tr>
+            <td class="text-success"><i class="bi bi-check-circle me-1"></i> Sealed bakery goods, bread, and pastries</td>
+            <td class="text-danger"><i class="bi bi-x-circle me-1"></i> Expired high-risk seafood or poultry</td>
+          </tr>
+          <tr>
+            <td class="text-success"><i class="bi bi-check-circle me-1"></i> Unopened packaged dry groceries and pulses</td>
+            <td class="text-danger"><i class="bi bi-x-circle me-1"></i> Homemade uninspected canned preparations</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="mt-4 pt-3 border-top border-secondary text-center">
+      <p class="text-secondary small mb-2">Notice any food listing that violates these rules?</p>
+      <p class="small text-white">Use the <strong>"Report Listing"</strong> button on any donation details page to initiate immediate administrator review.</p>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Food Donation — Donor Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-heading">Donor Portal</div>
+    <a href="{{ url_for('donor.dashboard') }}" class="sidebar-nav-item">
+      <i class="bi bi-grid-fill"></i> Dashboard
+    </a>
+    <a href="{{ url_for('donor.donations') }}" class="sidebar-nav-item">
+      <i class="bi bi-box-seam"></i> My Donations
+    </a>
+    <a href="{{ url_for('donor.create') }}" class="sidebar-nav-item active">
+      <i class="bi bi-plus-circle"></i> Add New Donation
+    </a>
+    <a href="{{ url_for('donor.requests') }}" class="sidebar-nav-item">
+      <i class="bi bi-inbox"></i> Donation Requests
+    </a>
+    <a href="{{ url_for('donor.reports') }}" class="sidebar-nav-item">
+      <i class="bi bi-bar-chart-line"></i> Impact Reports
+    </a>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+      <h2 class="fw-bold text-white mb-1">List Surplus Food For Donation</h2>
+      <p class="text-secondary small mb-0">Publish safe, edible surplus food to connect with nearby community kitchens and recipients.</p>
+    </div>
+
+    <div class="fs-card p-4 p-lg-5" style="max-width: 900px;">
+      <form method="POST" action="{{ url_for('donor.create') }}" enctype="multipart/form-data">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+        <!-- Section 1: Food Details -->
+        <h5 class="fw-bold text-white mb-3" style="color: var(--green-primary);"><i class="bi bi-info-circle me-2"></i>1. Food Details</h5>
+        
+        <div class="row g-3 mb-3">
+          <div class="col-md-8">
+            <label class="form-label">Food Title *</label>
+            <input type="text" class="form-control" name="title" placeholder="e.g. Fresh Vegetable Dum Biryani" required value="{{ form_data.title if form_data else '' }}">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Category *</label>
+            <select class="form-select" name="category" required>
+              {% for cat in categories %}
+                <option value="{{ cat }}" {% if form_data and form_data.category == cat %}selected{% endif %}>{{ cat }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Description & Ingredients *</label>
+          <textarea class="form-control" name="description" rows="3" placeholder="Provide full details on the preparation, dish components, and freshness status..." required>{{ form_data.description if form_data else '' }}</textarea>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <label class="form-label">Quantity *</label>
+            <input type="number" step="0.5" min="0.5" class="form-control" name="quantity" placeholder="e.g. 20" required value="{{ form_data.quantity if form_data else '' }}">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Measurement Unit *</label>
+            <select class="form-select" name="unit" required>
+              <option value="kg" {% if form_data and form_data.unit == 'kg' %}selected{% endif %}>Kilograms (kg)</option>
+              <option value="servings" {% if form_data and form_data.unit == 'servings' %}selected{% endif %}>Servings / Meals</option>
+              <option value="packages" {% if form_data and form_data.unit == 'packages' %}selected{% endif %}>Food Packages</option>
+              <option value="boxes" {% if form_data and form_data.unit == 'boxes' %}selected{% endif %}>Boxes / Trays</option>
+              <option value="litres" {% if form_data and form_data.unit == 'litres' %}selected{% endif %}>Litres</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Food Classification *</label>
+            <select class="form-select" name="food_classification" required>
+              <option value="Vegetarian" {% if form_data and form_data.food_classification == 'Vegetarian' %}selected{% endif %}>Vegetarian</option>
+              <option value="Non-Vegetarian" {% if form_data and form_data.food_classification == 'Non-Vegetarian' %}selected{% endif %}>Non-Vegetarian</option>
+              <option value="Vegan" {% if form_data and form_data.food_classification == 'Vegan' %}selected{% endif %}>Vegan</option>
+            </select>
+          </div>
+        </div>
+
+        <hr class="my-4" style="border-color: var(--border-color);">
+
+        <!-- Section 2: Health, Safety & Storage -->
+        <h5 class="fw-bold text-white mb-3"><i class="bi bi-shield-check text-warning me-2"></i>2. Food Safety & Handling</h5>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Known Allergens (or state "None") *</label>
+            <input type="text" class="form-control" name="allergens" placeholder="e.g. Dairy, Gluten, Peanuts, Soy" required value="{{ form_data.allergens if form_data else 'None' }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Storage Instructions *</label>
+            <input type="text" class="form-control" name="storage_instructions" placeholder="e.g. Hot holding > 65°C, or chill below 4°C" required value="{{ form_data.storage_instructions if form_data else 'Keep refrigerated or hot-hold' }}">
+          </div>
+        </div>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Packaging & Containers *</label>
+            <input type="text" class="form-control" name="packaging_details" placeholder="e.g. Sealed food containers, foil trays" required value="{{ form_data.packaging_details if form_data else 'Sealed food grade containers' }}">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Preparation Time (Approx)</label>
+            <input type="text" class="form-control" name="preparation_time" placeholder="e.g. Today at 12:00 PM" value="{{ form_data.preparation_time if form_data else '' }}">
+          </div>
+        </div>
+
+        <hr class="my-4" style="border-color: var(--border-color);">
+
+        <!-- Section 3: Collection Logistics -->
+        <h5 class="fw-bold text-white mb-3"><i class="bi bi-geo-alt text-info me-2"></i>3. Pickup Window & Location</h5>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <label class="form-label">Pickup Start Time *</label>
+            <input type="text" class="form-control" name="pickup_start" placeholder="e.g. 02:00 PM" required value="{{ form_data.pickup_start if form_data else '02:00 PM' }}">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Pickup End Time *</label>
+            <input type="text" class="form-control" name="pickup_end" placeholder="e.g. 06:00 PM" required value="{{ form_data.pickup_end if form_data else '06:00 PM' }}">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Available Until (Expiry Deadline) *</label>
+            <input type="datetime-local" class="form-control" name="available_until" required>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Exact Pickup Address *</label>
+          <input type="text" class="form-control" name="pickup_address" placeholder="Kitchen gate, delivery dock, building number..." required value="{{ form_data.pickup_address if form_data else user.address }}">
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Contact & Entry Instructions</label>
+          <input type="text" class="form-control" name="contact_instructions" placeholder="e.g. Ask for Chef at Gate 3, bring clean vehicle" value="{{ form_data.contact_instructions if form_data else '' }}">
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Upload Food Photo (Optional)</label>
+          <input type="file" class="form-control" name="image" accept="image/*">
+          <span class="text-secondary small">Permitted formats: JPG, PNG, WEBP (Max 5MB). If left blank, a high-quality category image will be assigned.</span>
+        </div>
+
+        <!-- Accuracy Confirmation Checkbox -->
+        <div class="p-3 mb-4 rounded" style="background: var(--bg-elevated); border: 1px solid var(--border-color);">
+          <div class="form-check">
+            <input type="checkbox" class="form-check-input" id="confirmAccuracy" name="accuracy_confirmed" value="1" required checked>
+            <label class="form-check-label text-white small" for="confirmAccuracy">
+              <strong>I confirm accuracy and food safety:</strong> This food was prepared in a hygienic kitchen, has been stored at safe temperatures, and the allergen and quantity details provided above are fully accurate.
+            </label>
+          </div>
+        </div>
+
+        <div class="d-flex gap-3">
+          <button type="submit" class="btn btn-share-green btn-lg px-4">
+            <i class="bi bi-check2-circle me-1"></i> Publish Food Donation
+          </button>
+          <a href="{{ url_for('donor.dashboard') }}" class="btn btn-share-outline btn-lg">
+            Cancel
+          </a>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+{% endblock %}

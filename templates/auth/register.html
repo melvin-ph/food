@@ -1,0 +1,205 @@
+{% extends 'base.html' %}
+
+{% block title %}Register — Join FoodShare{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8 col-xl-7">
+      
+      <div class="text-center mb-4">
+        <h2 class="fw-bold text-white mb-2">Create Your FoodShare Account</h2>
+        <p class="text-secondary small">Join our network to donate surplus food or receive nutritious meals for your community.</p>
+
+        <!-- Role Selector Buttons -->
+        <div class="btn-group p-1 rounded-pill mt-2" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+          <button type="button" class="btn btn-sm rounded-pill px-3 py-2 {% if selected_role == 'donor' or not selected_role %}btn-share-green{% else %}btn-share-outline{% endif %}" id="tabBtnDonor" onclick="selectRole('donor')">
+            <i class="bi bi-shop me-1"></i> Food Donor
+          </button>
+          <button type="button" class="btn btn-sm rounded-pill px-3 py-2 {% if selected_role == 'ngo' %}btn-share-orange{% else %}btn-share-outline{% endif %}" id="tabBtnNgo" onclick="selectRole('ngo')">
+            <i class="bi bi-building me-1"></i> NGO / Charity
+          </button>
+          <button type="button" class="btn btn-sm rounded-pill px-3 py-2 {% if selected_role == 'recipient' %}btn-share-orange{% else %}btn-share-outline{% endif %}" id="tabBtnRecipient" onclick="selectRole('recipient')">
+            <i class="bi bi-person me-1"></i> Individual
+          </button>
+        </div>
+      </div>
+
+      <div class="fs-card p-4 p-md-5">
+        <form method="POST" action="{{ url_for('auth.register') }}" id="registerForm">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+          <input type="hidden" name="role" id="roleInput" value="{{ selected_role or 'donor' }}">
+
+          <!-- Section: Donor Specific Fields -->
+          <div id="donorFields">
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Business / Organization Name *</label>
+                <input type="text" class="form-control" name="org_name" placeholder="e.g. Hotel Grand Plaza" value="{{ form_data.org_name if form_data else '' }}">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Contact Person Name *</label>
+                <input type="text" class="form-control" name="contact_name" placeholder="e.g. Rajesh Kumar" value="{{ form_data.contact_name if form_data else '' }}">
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Donor Facility Type *</label>
+              <select class="form-select" name="donor_type">
+                <option value="Restaurant">Restaurant</option>
+                <option value="Hotel">Hotel / Resort</option>
+                <option value="Hostel">Hostel / Campus Dining</option>
+                <option value="Caterer">Catering Company</option>
+                <option value="Event Organizer">Event Organizer</option>
+                <option value="Bakery / Grocery">Bakery / Grocery Store</option>
+                <option value="Other">Other Food Provider</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Section: NGO Specific Fields -->
+          <div id="ngoFields" style="display: none;">
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">NGO / Charity Name *</label>
+                <input type="text" class="form-control" name="org_name" placeholder="e.g. Helping Hands Foundation" value="{{ form_data.org_name if form_data else '' }}">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Representative / Coordinator *</label>
+                <input type="text" class="form-control" name="contact_name" placeholder="e.g. Ananya Roy" value="{{ form_data.contact_name if form_data else '' }}">
+              </div>
+            </div>
+
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">NGO Registration / ID Number</label>
+                <input type="text" class="form-control" name="reg_number" placeholder="e.g. NGO-IND-2022-991" value="{{ form_data.reg_number if form_data else '' }}">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Service Area / Community Coverage</label>
+                <input type="text" class="form-control" name="service_area" placeholder="e.g. Central Metro & East Districts" value="{{ form_data.service_area if form_data else '' }}">
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Organization Mission / Description</label>
+              <textarea class="form-control" name="description" rows="2" placeholder="Brief summary of your community kitchen or distribution work...">{{ form_data.description if form_data else '' }}</textarea>
+            </div>
+          </div>
+
+          <!-- Section: Individual Recipient Specific Fields -->
+          <div id="recipientFields" style="display: none;">
+            <div class="row g-3 mb-3">
+              <div class="col-md-6">
+                <label class="form-label">Full Name *</label>
+                <input type="text" class="form-control" name="name" placeholder="e.g. Priya Sharma" value="{{ form_data.name if form_data else '' }}">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Neighborhood / Area *</label>
+                <input type="text" class="form-control" name="service_area" placeholder="e.g. East District Ward 5" value="{{ form_data.service_area if form_data else '' }}">
+              </div>
+            </div>
+          </div>
+
+          <!-- Common Fields for All Roles -->
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Email Address *</label>
+              <input type="email" class="form-control" name="email" placeholder="contact@domain.com" required value="{{ form_data.email if form_data else '' }}">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Phone Number *</label>
+              <input type="tel" class="form-control" name="phone" placeholder="+91 98765 43210" required value="{{ form_data.phone if form_data else '' }}">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Pickup Address / Physical Location *</label>
+            <input type="text" class="form-control" name="address" placeholder="Street, Building, Area, City" required value="{{ form_data.address if form_data else '' }}">
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label">Password * (Min 6 chars)</label>
+              <input type="password" class="form-control" name="password" required autocomplete="new-password">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Confirm Password *</label>
+              <input type="password" class="form-control" name="confirm_password" required autocomplete="new-password">
+            </div>
+          </div>
+
+          <!-- Terms Checkbox -->
+          <div class="mb-4 form-check">
+            <input type="checkbox" class="form-check-input" id="termsCheck" name="terms" required>
+            <label class="form-check-label text-secondary small" for="termsCheck">
+              I agree to the <a href="{{ url_for('public.food_safety') }}" target="_blank">Food Safety Guidelines</a> and acknowledge that all surplus food details must be accurate and hygienically handled.
+            </label>
+          </div>
+
+          <!-- Submit Button -->
+          <button type="submit" class="btn w-100 py-2 fw-bold" id="btnRegisterSubmit" style="background: var(--green-primary); color: #071308;">
+            Create Account
+          </button>
+        </form>
+
+        <div class="text-center mt-4 pt-3 border-top" style="border-color: var(--border-color) !important;">
+          <span class="text-secondary small">Already have an account?</span>
+          <a href="{{ url_for('auth.login') }}" class="fw-bold ms-1" style="color: var(--green-primary);">Log in here</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+function selectRole(role) {
+  document.getElementById('roleInput').value = role;
+  const donorFields = document.getElementById('donorFields');
+  const ngoFields = document.getElementById('ngoFields');
+  const recipientFields = document.getElementById('recipientFields');
+  const submitBtn = document.getElementById('btnRegisterSubmit');
+
+  const tabBtnDonor = document.getElementById('tabBtnDonor');
+  const tabBtnNgo = document.getElementById('tabBtnNgo');
+  const tabBtnRecipient = document.getElementById('tabBtnRecipient');
+
+  // Reset classes
+  tabBtnDonor.className = "btn btn-sm rounded-pill px-3 py-2 btn-share-outline";
+  tabBtnNgo.className = "btn btn-sm rounded-pill px-3 py-2 btn-share-outline";
+  tabBtnRecipient.className = "btn btn-sm rounded-pill px-3 py-2 btn-share-outline";
+
+  donorFields.style.display = 'none';
+  ngoFields.style.display = 'none';
+  recipientFields.style.display = 'none';
+
+  if (role === 'donor') {
+    donorFields.style.display = 'block';
+    tabBtnDonor.className = "btn btn-sm rounded-pill px-3 py-2 btn-share-green";
+    submitBtn.style.background = 'var(--green-primary)';
+    submitBtn.style.color = '#071308';
+    submitBtn.textContent = 'Register as Food Donor';
+  } else if (role === 'ngo') {
+    ngoFields.style.display = 'block';
+    tabBtnNgo.className = "btn btn-sm rounded-pill px-3 py-2 btn-share-orange";
+    submitBtn.style.background = 'var(--orange-warm)';
+    submitBtn.style.color = '#ffffff';
+    submitBtn.textContent = 'Register as NGO Organization';
+  } else if (role === 'recipient') {
+    recipientFields.style.display = 'block';
+    tabBtnRecipient.className = "btn btn-sm rounded-pill px-3 py-2 btn-share-orange";
+    submitBtn.style.background = 'var(--orange-warm)';
+    submitBtn.style.color = '#ffffff';
+    submitBtn.textContent = 'Register as Individual Recipient';
+  }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  const initialRole = "{{ selected_role or 'donor' }}";
+  selectRole(initialRole);
+});
+</script>
+{% endblock %}

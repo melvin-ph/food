@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}My Food Requests — Recipient Portal{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+    <div>
+      <h2 class="fw-bold text-white mb-1">My Food Requests & Pickups</h2>
+      <p class="text-secondary small mb-0">Track the status of your requests and view collection directions.</p>
+    </div>
+    <a href="{{ url_for('recipient.dashboard') }}" class="btn btn-sm btn-share-outline">Dashboard</a>
+  </div>
+
+  <div class="fs-card p-4">
+    <div class="table-responsive">
+      <table class="table-fs">
+        <thead>
+          <tr>
+            <th>Food Item</th>
+            <th>Donor Provider</th>
+            <th>Quantity</th>
+            <th>Pickup Address</th>
+            <th>Pickup Window</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if requests %}
+            {% for req in requests %}
+              <tr>
+                <td class="fw-bold text-white">
+                  <a href="{{ url_for('donations.detail', donation_id=req.donation_id) }}" class="text-white text-decoration-none">
+                    {{ req.donation_title }}
+                  </a>
+                </td>
+                <td>{{ req.donor_name }}</td>
+                <td class="fw-bold text-warning">{{ req.requested_quantity }} {{ req.unit }}</td>
+                <td class="small text-white"><i class="bi bi-geo-alt text-warning me-1"></i>{{ req.pickup_address }}</td>
+                <td class="small text-secondary">{{ req.pickup_window }}</td>
+                <td><span class="{{ req.status | status_badge }}">{{ req.status }}</span></td>
+                <td class="text-end">
+                  {% if req.status == 'Approved' %}
+                    <form method="POST" action="{{ url_for('recipient.confirm_pickup', request_id=req._id) }}" onsubmit="return confirm('Confirm that you have collected this food?');" class="d-inline">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                      <button type="submit" class="btn btn-sm btn-share-green">Confirm Pickup</button>
+                    </form>
+                  {% elif req.status == 'Pending' %}
+                    <form method="POST" action="{{ url_for('recipient.cancel_req', request_id=req._id) }}" onsubmit="return confirm('Cancel this request?');" class="d-inline">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                      <button type="submit" class="btn btn-sm btn-outline-secondary">Cancel</button>
+                    </form>
+                  {% elif req.status in ['Collected', 'Completed'] %}
+                    <span class="small text-success"><i class="bi bi-check-circle-fill me-1"></i> Collected</span>
+                  {% else %}
+                    <span class="small text-secondary">{{ req.status }}</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="7" class="text-center py-5 text-secondary">
+                You have no requests on record. Browse available food to submit your first request!
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

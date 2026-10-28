@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}My Requests — NGO Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-heading">NGO Portal</div>
+    <a href="{{ url_for('ngo.dashboard') }}" class="sidebar-nav-item">
+      <i class="bi bi-grid-fill"></i> Dashboard
+    </a>
+    <a href="{{ url_for('ngo.browse') }}" class="sidebar-nav-item">
+      <i class="bi bi-search"></i> Browse Donations
+    </a>
+    <a href="{{ url_for('ngo.requests') }}" class="sidebar-nav-item active-orange">
+      <i class="bi bi-hourglass-split"></i> My Requests
+    </a>
+    <a href="{{ url_for('ngo.collections') }}" class="sidebar-nav-item">
+      <i class="bi bi-calendar-check"></i> Collection History
+    </a>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+      <div>
+        <h2 class="fw-bold text-white mb-1">My Submitted Requests</h2>
+        <p class="text-secondary small mb-0">Track donor reviews, view pickup directions, and confirm food handovers.</p>
+      </div>
+
+      <div class="btn-group btn-group-sm">
+        <a href="{{ url_for('ngo.requests') }}" class="btn {% if not active_status %}btn-share-orange{% else %}btn-share-outline{% endif %}">All</a>
+        <a href="{{ url_for('ngo.requests', status='Pending') }}" class="btn {% if active_status == 'Pending' %}btn-share-orange{% else %}btn-share-outline{% endif %}">Pending</a>
+        <a href="{{ url_for('ngo.requests', status='Approved') }}" class="btn {% if active_status == 'Approved' %}btn-share-orange{% else %}btn-share-outline{% endif %}">Approved</a>
+        <a href="{{ url_for('ngo.requests', status='Collected') }}" class="btn {% if active_status == 'Collected' %}btn-share-orange{% else %}btn-share-outline{% endif %}">Collected</a>
+      </div>
+    </div>
+
+    <div class="fs-card p-4">
+      <div class="table-responsive">
+        <table class="table-fs">
+          <thead>
+            <tr>
+              <th>Food Item</th>
+              <th>Donor Organization</th>
+              <th>Requested Qty</th>
+              <th>Status</th>
+              <th>Pickup Address & Window</th>
+              <th>Donor Notes</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if requests %}
+              {% for req in requests %}
+                <tr>
+                  <td>
+                    <a href="{{ url_for('donations.detail', donation_id=req.donation_id) }}" class="fw-bold text-white text-decoration-none">
+                      {{ req.donation_title }}
+                    </a>
+                  </td>
+                  <td>
+                    <div class="fw-semibold text-white">{{ req.donor_name }}</div>
+                    {% if req.donor_contact %}<span class="small text-secondary"><i class="bi bi-telephone me-1"></i>{{ req.donor_contact }}</span>{% endif %}
+                  </td>
+                  <td><span class="fw-bold text-warning">{{ req.requested_quantity }} {{ req.unit }}</span></td>
+                  <td><span class="{{ req.status | status_badge }}">{{ req.status }}</span></td>
+                  <td>
+                    <div class="small text-white"><i class="bi bi-geo-alt text-warning me-1"></i>{{ req.pickup_address }}</div>
+                    <div class="small text-secondary"><i class="bi bi-clock me-1"></i>Window: {{ req.pickup_window }}</div>
+                  </td>
+                  <td>
+                    <span class="small text-secondary">{{ req.donor_notes or 'No special instructions' }}</span>
+                  </td>
+                  <td class="text-end">
+                    {% if req.status == 'Approved' %}
+                      <form method="POST" action="{{ url_for('ngo.confirm_pickup', request_id=req._id) }}" onsubmit="return confirm('Confirm that you have collected this food donation?');" class="d-inline">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button type="submit" class="btn btn-sm btn-share-green">
+                          <i class="bi bi-check-circle me-1"></i> Confirm Pickup
+                        </button>
+                      </form>
+                    {% elif req.status == 'Pending' %}
+                      <form method="POST" action="{{ url_for('ngo.cancel_req', request_id=req._id) }}" onsubmit="return confirm('Cancel this pending request?');" class="d-inline">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                          Cancel
+                        </button>
+                      </form>
+                    {% elif req.status in ['Collected', 'Completed'] %}
+                      <span class="badge-success"><i class="bi bi-check-all me-1"></i> Collected</span>
+                    {% else %}
+                      <span class="small text-secondary">{{ req.status }}</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="7" class="text-center py-5 text-secondary">
+                  No requests found for this filter.
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

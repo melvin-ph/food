@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}How It Works — FoodShare{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  
+  <div class="text-center mb-5">
+    <span class="badge px-3 py-1 mb-2" style="background: rgba(57, 211, 83, 0.15); color: var(--green-primary); border: 1px solid rgba(57, 211, 83, 0.3);">
+      Simple & Transparent Process
+    </span>
+    <h1 class="display-5 fw-bold text-white">How Food Redistribution Works</h1>
+    <p class="text-secondary mx-auto" style="max-width: 650px;">
+      A closed-loop platform ensuring safe, timely, and organized food transfer from surplus kitchens to individuals and registered charitable causes.
+    </p>
+  </div>
+
+  <div class="row g-4 mb-5">
+    <!-- Step 1: Donor -->
+    <div class="col-lg-4">
+      <div class="feature-box p-4 h-100">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="feature-icon-wrapper mb-0" style="color: var(--green-primary);">
+            <i class="bi bi-box-seam-fill"></i>
+          </div>
+          <span class="display-6 fw-bold text-secondary opacity-50">01</span>
+        </div>
+        <h4 class="fw-bold text-white mb-2">1. Donors Publish Surplus</h4>
+        <p class="text-secondary small mb-3">
+          Restaurants, hostels, caterers, and bakeries list available surplus food with quantity, dietary classification (veg/non-veg), packaging, pickup window, and mandatory food safety confirmations.
+        </p>
+        <div class="p-2 rounded small" style="background: var(--bg-elevated); border: 1px solid var(--border-color);">
+          <strong class="text-success">Outcome:</strong> Immediate listing publication to verified nearby recipients.
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Recipient / NGO -->
+    <div class="col-lg-4">
+      <div class="feature-box p-4 h-100">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="feature-icon-wrapper mb-0" style="color: var(--orange-warm);">
+            <i class="bi bi-search-heart"></i>
+          </div>
+          <span class="display-6 fw-bold text-secondary opacity-50">02</span>
+        </div>
+        <h4 class="fw-bold text-white mb-2">2. Browse & Request</h4>
+        <p class="text-secondary small mb-3">
+          Charitable NGOs and individual recipients browse available donations, specify the required quantity, and submit an intended collection time within the donor's designated pickup hours.
+        </p>
+        <div class="p-2 rounded small" style="background: var(--bg-elevated); border: 1px solid var(--border-color);">
+          <strong class="text-warning">Outcome:</strong> Donor is notified instantly to review and reserve the food.
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 3: Collection -->
+    <div class="col-lg-4">
+      <div class="feature-box p-4 h-100">
+        <div class="d-flex align-items-center justify-content-between mb-3">
+          <div class="feature-icon-wrapper mb-0" style="color: var(--state-info);">
+            <i class="bi bi-check2-circle"></i>
+          </div>
+          <span class="display-6 fw-bold text-secondary opacity-50">03</span>
+        </div>
+        <h4 class="fw-bold text-white mb-2">3. Pickup & Handover</h4>
+        <p class="text-secondary small mb-3">
+          Upon donor approval, the remaining quantity is safely reserved. The recipient arrives at the facility with appropriate clean containers, collects the food, and both parties confirm completion on the platform.
+        </p>
+        <div class="p-2 rounded small" style="background: var(--bg-elevated); border: 1px solid var(--border-color);">
+          <strong class="text-info">Outcome:</strong> Zero food waste, complete audit trail, and instant impact reporting.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Role breakdown cards -->
+  <div class="fs-card p-4 p-md-5 mb-5">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-6">
+        <img src="{{ url_for('static', filename='images/food-distribution.jpg') }}" alt="Food distribution team" class="img-fluid rounded border border-secondary" style="height: 340px; width: 100%; object-fit: cover;">
+      </div>
+      <div class="col-lg-6">
+        <h3 class="fw-bold text-white mb-3">Designed For Three Key Roles</h3>
+        
+        <div class="mb-3">
+          <div class="fw-bold text-success mb-1"><i class="bi bi-shop me-2"></i>Food Donors</div>
+          <p class="text-secondary small mb-0">Restaurants, hotels, convention centers, and caterers can turn unavoidable surplus into social good without operational headaches.</p>
+        </div>
+
+        <div class="mb-3">
+          <div class="fw-bold text-warning mb-1"><i class="bi bi-people-fill me-2"></i>NGOs & Charities</div>
+          <p class="text-secondary small mb-0">Verified social organizations can collect large batch donations to feed children's homes, elder care facilities, and relief camps.</p>
+        </div>
+
+        <div>
+          <div class="fw-bold text-info mb-1"><i class="bi bi-heart me-2"></i>Individual Recipients</div>
+          <p class="text-secondary small mb-0">Individuals and families facing food insecurity can browse dignified, wholesome meals with strict privacy protection.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="text-center py-4">
+    <h4 class="fw-bold text-white mb-3">Ready to Make an Impact?</h4>
+    <div class="d-flex justify-content-center gap-3">
+      <a href="{{ url_for('auth.register', role='donor') }}" class="btn btn-share-green btn-lg px-4">Register as Food Donor</a>
+      <a href="{{ url_for('auth.register', role='ngo') }}" class="btn btn-share-orange btn-lg px-4">Register as NGO</a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

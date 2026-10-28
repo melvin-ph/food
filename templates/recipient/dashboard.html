@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+
+{% block title %}Recipient Dashboard — FoodShare{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  
+  <!-- Header Bar -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+    <div>
+      <span class="badge bg-info-subtle text-info mb-1">Recipient Portal</span>
+      <h2 class="fw-bold text-white mb-0">Hello, {{ user.name }}</h2>
+      <p class="text-secondary small mb-0">Browse fresh meals and wholesome food available in your community.</p>
+    </div>
+
+    <div class="d-flex gap-2">
+      <a href="{{ url_for('recipient.browse') }}" class="btn btn-share-orange">
+        <i class="bi bi-search me-1"></i> Find Food
+      </a>
+      <a href="{{ url_for('recipient.my_requests') }}" class="btn btn-share-outline">
+        <i class="bi bi-bag-check me-1"></i> My Food Requests
+      </a>
+    </div>
+  </div>
+
+  <!-- Quick Status Counters -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="fs-card p-3 d-flex align-items-center justify-content-between">
+        <div>
+          <div class="text-secondary small">Pending Approval</div>
+          <div class="fs-2 fw-bold text-warning">{{ pending_count }}</div>
+        </div>
+        <i class="bi bi-clock-history fs-1 text-warning opacity-50"></i>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="fs-card p-3 d-flex align-items-center justify-content-between">
+        <div>
+          <div class="text-secondary small">Approved For Pickup</div>
+          <div class="fs-2 fw-bold text-success">{{ approved_count }}</div>
+        </div>
+        <i class="bi bi-bag-check-fill fs-1 text-success opacity-50"></i>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="fs-card p-3 d-flex align-items-center justify-content-between">
+        <div>
+          <div class="text-secondary small">Completed Collections</div>
+          <div class="fs-2 fw-bold text-info">{{ collected_count }}</div>
+        </div>
+        <i class="bi bi-check-circle-fill fs-1 text-info opacity-50"></i>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Requests Alerts -->
+  {% if my_requests %}
+    <div class="fs-card p-4 mb-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-white mb-0">Your Active Food Requests</h5>
+        <a href="{{ url_for('recipient.my_requests') }}" class="small text-warning text-decoration-none">View All</a>
+      </div>
+
+      <div class="row g-3">
+        {% for req in my_requests %}
+          <div class="col-md-6">
+            <div class="p-3 rounded" style="background: var(--bg-elevated); border: 1px solid var(--border-color);">
+              <div class="d-flex justify-content-between align-items-start mb-2">
+                <h6 class="fw-bold text-white mb-0">{{ req.donation_title }}</h6>
+                <span class="{{ req.status | status_badge }}">{{ req.status }}</span>
+              </div>
+              <div class="small text-secondary mb-2">
+                <i class="bi bi-building me-1"></i> {{ req.donor_name }} • Requested: <strong class="text-white">{{ req.requested_quantity }} {{ req.unit }}</strong>
+              </div>
+              <div class="small text-white mb-2">
+                <i class="bi bi-geo-alt text-warning me-1"></i> {{ req.pickup_address }}
+              </div>
+              {% if req.donor_notes %}
+                <div class="p-2 rounded mb-2 small" style="background: var(--bg-card); border: 1px dashed var(--border-color);">
+                  <strong class="text-info">Donor Note:</strong> {{ req.donor_notes }}
+                </div>
+              {% endif %}
+
+              <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary">
+                <span class="small text-secondary"><i class="bi bi-clock me-1"></i>{{ req.pickup_window }}</span>
+                {% if req.status == 'Approved' %}
+                  <form method="POST" action="{{ url_for('recipient.confirm_pickup', request_id=req._id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-sm btn-share-green py-1">Confirm Pickup</button>
+                  </form>
+                {% elif req.status == 'Pending' %}
+                  <form method="POST" action="{{ url_for('recipient.cancel_req', request_id=req._id) }}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-sm btn-outline-secondary py-1">Cancel</button>
+                  </form>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Available Food Showcase -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h4 class="fw-bold text-white mb-0">Available Food In Your Area</h4>
+    <a href="{{ url_for('recipient.browse') }}" class="btn btn-sm btn-share-outline">Browse All Listings</a>
+  </div>
+
+  <div class="row g-4">
+    {% for donation in donations %}
+      <div class="col-lg-4 col-md-6">
+        <div class="donation-card">
+          <div class="position-relative">
+            <img src="{{ donation.image_path or url_for('static', filename='images/prepared-meals.jpg') }}" class="donation-card-img" alt="{{ donation.title }}">
+            <span class="position-absolute bottom-0 start-0 m-3 food-type-badge {% if donation.food_classification == 'Vegetarian' %}food-type-veg{% else %}food-type-nonveg{% endif %}">
+              {{ donation.food_classification }}
+            </span>
+          </div>
+          <div class="donation-card-body">
+            <h5 class="fw-bold text-white mb-1">{{ donation.title }}</h5>
+            <div class="small text-secondary mb-2"><i class="bi bi-geo-alt text-warning me-1"></i>{{ donation.pickup_address }}</div>
+            <div class="small text-success mb-3"><i class="bi bi-box2 me-1"></i>{{ donation.remaining_quantity }} {{ donation.unit }} remaining</div>
+
+            <div class="mt-auto d-flex justify-content-between align-items-center pt-2 border-top border-secondary">
+              <a href="{{ url_for('donations.detail', donation_id=donation._id) }}" class="btn btn-sm btn-share-outline">View Details</a>
+              <button type="button" class="btn btn-sm btn-share-orange" data-bs-toggle="modal" data-bs-target="#requestFoodModal"
+                      data-donation-id="{{ donation._id }}"
+                      data-donation-title="{{ donation.title }}"
+                      data-max-qty="{{ [donation.remaining_quantity, 10] | min }}"
+                      data-unit="{{ donation.unit }}"
+                      data-address="{{ donation.pickup_address }}"
+                      data-pickup-time="{{ donation.pickup_start }} - {{ donation.pickup_end }}">
+                Request Food
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+
+<!-- Modal Included -->
+<div class="modal fade" id="requestFoodModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+      <div class="modal-header border-bottom border-secondary">
+        <h5 class="modal-title text-white">Request Food</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{{ url_for('recipient.submit') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="hidden" name="donation_id" id="modalDonationId">
+        
+        <div class="modal-body">
+          <div class="p-3 mb-3 rounded" style="background: var(--bg-elevated); border: 1px solid var(--border-color);">
+            <div class="fw-bold text-white" id="modalDonationTitle"></div>
+            <div class="small text-secondary mt-1">Available: <span class="text-success fw-bold" id="modalMaxQty"></span></div>
+            <div class="small text-secondary mt-1" id="modalPickupInfo"></div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Quantity Needed (<span id="modalQtyUnitLabel">kg</span>) *</label>
+            <input type="number" step="0.5" min="0.5" max="10" class="form-control" name="requested_quantity" id="modalQtyInput" required>
+            <span class="small text-secondary">Individual requests are limited to a maximum of 10 units for fair distribution.</span>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Approximate Collection Time *</label>
+            <input type="text" class="form-control" name="intended_pickup_time" placeholder="e.g. Today around 04:30 PM" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Notes for Donor (Optional)</label>
+            <textarea class="form-control" name="notes" rows="2" placeholder="e.g. For self and elderly family members..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer border-top border-secondary">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-share-orange btn-sm">Submit Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

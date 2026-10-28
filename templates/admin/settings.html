@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Platform Settings — Admin Console{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-heading">Admin Operations</div>
+    <a href="{{ url_for('admin.dashboard') }}" class="sidebar-nav-item">
+      <i class="bi bi-speedometer2"></i> Dashboard
+    </a>
+    <a href="{{ url_for('admin.users') }}" class="sidebar-nav-item">
+      <i class="bi bi-people"></i> Manage Users
+    </a>
+    <a href="{{ url_for('admin.donations') }}" class="sidebar-nav-item">
+      <i class="bi bi-box-seam"></i> Food Listings
+    </a>
+    <a href="{{ url_for('admin.requests') }}" class="sidebar-nav-item">
+      <i class="bi bi-inbox"></i> Redistribution Requests
+    </a>
+    <a href="{{ url_for('admin.categories') }}" class="sidebar-nav-item">
+      <i class="bi bi-tags"></i> Food Categories
+    </a>
+    <a href="{{ url_for('admin.audit_logs') }}" class="sidebar-nav-item">
+      <i class="bi bi-journal-text"></i> Audit Logs
+    </a>
+    <a href="{{ url_for('admin.settings') }}" class="sidebar-nav-item active">
+      <i class="bi bi-sliders"></i> Platform Settings
+    </a>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+      <h2 class="fw-bold text-white mb-1">Global Platform Configuration</h2>
+      <p class="text-secondary small mb-0">Configure food safety guidance, rate limits, contact information, and brand parameters.</p>
+    </div>
+
+    <div class="fs-card p-4 p-md-5" style="max-width: 800px;">
+      <form method="POST" action="{{ url_for('admin.settings') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+        <div class="row g-3 mb-3">
+          <div class="col-md-6">
+            <label class="form-label">Platform Name</label>
+            <input type="text" class="form-control" name="platform_name" value="{{ settings.platform_name or 'FoodShare' }}" required>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label">Support Email</label>
+            <input type="email" class="form-control" name="support_email" value="{{ settings.support_email or 'support@foodshare.com' }}" required>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Platform Brand Tagline</label>
+          <input type="text" class="form-control" name="tagline" value="{{ settings.tagline or 'Good Food. Brighter Tomorrows.' }}" required>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label">Maximum Units Allowed per Individual Recipient Request</label>
+          <input type="number" class="form-control" name="individual_max_units" value="{{ settings.individual_max_units or 10 }}" min="1" max="50" required>
+          <span class="small text-secondary">Prevents hoarding and safeguards equitable meal distribution.</span>
+        </div>
+
+        <div class="mb-4">
+          <label class="form-label">Food Safety & Redistribution Disclaimer</label>
+          <textarea class="form-control" name="disclaimer" rows="4" required>{{ settings.disclaimer or 'FoodShare is a technological redistribution facilitator. Donors are legally responsible for food hygiene, freshness, and allergen accuracy under local safety regulations.' }}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-share-green px-4">
+          Save Global Settings
+        </button>
+      </form>
+    </div>
+  </main>
+</div>
+{% endblock %}

@@ -1,0 +1,135 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Users — Admin Console{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-heading">Admin Operations</div>
+    <a href="{{ url_for('admin.dashboard') }}" class="sidebar-nav-item">
+      <i class="bi bi-speedometer2"></i> Dashboard
+    </a>
+    <a href="{{ url_for('admin.users') }}" class="sidebar-nav-item active">
+      <i class="bi bi-people"></i> Manage Users
+    </a>
+    <a href="{{ url_for('admin.donations') }}" class="sidebar-nav-item">
+      <i class="bi bi-box-seam"></i> Food Listings
+    </a>
+    <a href="{{ url_for('admin.requests') }}" class="sidebar-nav-item">
+      <i class="bi bi-inbox"></i> Redistribution Requests
+    </a>
+    <a href="{{ url_for('admin.reported_listings') }}" class="sidebar-nav-item">
+      <i class="bi bi-flag"></i> Reported Listings
+    </a>
+    <a href="{{ url_for('admin.categories') }}" class="sidebar-nav-item">
+      <i class="bi bi-tags"></i> Food Categories
+    </a>
+    <a href="{{ url_for('admin.audit_logs') }}" class="sidebar-nav-item">
+      <i class="bi bi-journal-text"></i> Audit Logs
+    </a>
+    <a href="{{ url_for('admin.settings') }}" class="sidebar-nav-item">
+      <i class="bi bi-sliders"></i> Platform Settings
+    </a>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+      <div>
+        <h2 class="fw-bold text-white mb-1">User Account Management</h2>
+        <p class="text-secondary small mb-0">Oversee registered donors, charities, and recipients, verify credentials, or modify status.</p>
+      </div>
+
+      <!-- Role Filters -->
+      <div class="btn-group btn-group-sm">
+        <a href="{{ url_for('admin.users') }}" class="btn {% if not active_role %}btn-share-green{% else %}btn-share-outline{% endif %}">All Roles</a>
+        <a href="{{ url_for('admin.users', role='donor') }}" class="btn {% if active_role == 'donor' %}btn-share-green{% else %}btn-share-outline{% endif %}">Donors</a>
+        <a href="{{ url_for('admin.users', role='ngo') }}" class="btn {% if active_role == 'ngo' %}btn-share-green{% else %}btn-share-outline{% endif %}">NGOs</a>
+        <a href="{{ url_for('admin.users', role='recipient') }}" class="btn {% if active_role == 'recipient' %}btn-share-green{% else %}btn-share-outline{% endif %}">Recipients</a>
+      </div>
+    </div>
+
+    <div class="fs-card p-4">
+      <div class="table-responsive">
+        <table class="table-fs">
+          <thead>
+            <tr>
+              <th>Name / Organization</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Phone</th>
+              <th>Verification</th>
+              <th>Status</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if users %}
+              {% for u in users %}
+                <tr>
+                  <td>
+                    <div class="fw-bold text-white">{{ u.org_name or u.name or u.contact_name }}</div>
+                    <span class="small text-secondary">{{ u.donor_type or u.service_area or 'Community Member' }}</span>
+                  </td>
+                  <td>{{ u.email }}</td>
+                  <td>
+                    <span class="badge text-uppercase {% if u.role == 'donor' %}bg-success-subtle text-success{% elif u.role == 'ngo' %}bg-warning-subtle text-warning{% elif u.role == 'admin' %}bg-danger-subtle text-danger{% else %}bg-info-subtle text-info{% endif %}">
+                      {{ u.role }}
+                    </span>
+                  </td>
+                  <td>{{ u.phone }}</td>
+                  <td>
+                    {% if u.verified %}
+                      <span class="badge bg-success-subtle text-success"><i class="bi bi-patch-check-fill me-1"></i>Verified</span>
+                    {% else %}
+                      <span class="badge bg-warning-subtle text-warning"><i class="bi bi-clock me-1"></i>Pending</span>
+                    {% endif %}
+                  </td>
+                  <td><span class="{{ u.status | status_badge }}">{{ u.status or 'active' }}</span></td>
+                  <td class="text-end">
+                    {% if u.role != 'admin' %}
+                      <div class="d-inline-flex gap-1">
+                        {% if not u.verified %}
+                          <form method="POST" action="{{ url_for('admin.user_status', user_id=u._id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="action" value="verify">
+                            <button type="submit" class="btn btn-sm btn-outline-success" title="Verify Credentials">
+                              <i class="bi bi-check-circle"></i>
+                            </button>
+                          </form>
+                        {% endif %}
+
+                        {% if u.status == 'suspended' %}
+                          <form method="POST" action="{{ url_for('admin.user_status', user_id=u._id) }}">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="action" value="activate">
+                            <button type="submit" class="btn btn-sm btn-success" title="Reactivate Account">
+                              Activate
+                            </button>
+                          </form>
+                        {% else %}
+                          <form method="POST" action="{{ url_for('admin.user_status', user_id=u._id) }}" onsubmit="return confirm('Are you sure you want to suspend this user?');">
+                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                            <input type="hidden" name="action" value="suspend">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Suspend Account">
+                              Suspend
+                            </button>
+                          </form>
+                        {% endif %}
+                      </div>
+                    {% else %}
+                      <span class="small text-secondary">System Admin</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr><td colspan="7" class="text-center py-4 text-secondary">No users found.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

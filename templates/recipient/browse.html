@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% block title %}Browse Food — Recipient Portal{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+    <div>
+      <h2 class="fw-bold text-white mb-1">Browse Available Food</h2>
+      <p class="text-secondary small mb-0">Select wholesome surplus meals and fresh produce provided by community donors.</p>
+    </div>
+    <a href="{{ url_for('recipient.dashboard') }}" class="btn btn-sm btn-share-outline">Back to Dashboard</a>
+  </div>
+
+  <!-- Filter Bar -->
+  <div class="fs-card p-3 mb-4">
+    <form method="GET" action="{{ url_for('recipient.browse') }}" class="row g-2 align-items-center">
+      <div class="col-md-5">
+        <input type="text" name="search" class="form-control" placeholder="Search food items or location..." value="{{ search }}">
+      </div>
+      <div class="col-md-4">
+        <select name="category" class="form-select">
+          <option value="All" {% if current_category == 'All' %}selected{% endif %}>All Categories</option>
+          {% for cat in categories %}
+            <option value="{{ cat }}" {% if current_category == cat %}selected{% endif %}>{{ cat }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3 d-flex gap-2">
+        <button type="submit" class="btn btn-share-orange w-100">Filter</button>
+        <a href="{{ url_for('recipient.browse') }}" class="btn btn-outline-secondary">Reset</a>
+      </div>
+    </form>
+  </div>
+
+  <!-- Grid -->
+  {% if donations %}
+    <div class="row g-4">
+      {% for donation in donations %}
+        <div class="col-lg-4 col-md-6">
+          <div class="donation-card">
+            <div class="position-relative">
+              <img src="{{ donation.image_path or url_for('static', filename='images/prepared-meals.jpg') }}" class="donation-card-img" alt="{{ donation.title }}">
+              <span class="position-absolute bottom-0 start-0 m-3 food-type-badge {% if donation.food_classification == 'Vegetarian' %}food-type-veg{% else %}food-type-nonveg{% endif %}">
+                {{ donation.food_classification }}
+              </span>
+            </div>
+            <div class="donation-card-body">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="text-secondary small">{{ donation.category }}</span>
+                <span class="text-success fw-bold">{{ donation.remaining_quantity }} {{ donation.unit }} left</span>
+              </div>
+              <h5 class="fw-bold text-white mb-2">{{ donation.title }}</h5>
+              <p class="text-secondary small mb-3 text-truncate-2">{{ donation.description[:110] }}...</p>
+              
+              <div class="p-2 rounded mb-3 small" style="background: var(--bg-elevated); border: 1px solid var(--border-color);">
+                <div class="text-white"><i class="bi bi-geo-alt text-warning me-1"></i>{{ donation.pickup_address }}</div>
+                <div class="text-secondary mt-1"><i class="bi bi-clock text-info me-1"></i>Window: {{ donation.pickup_start }} - {{ donation.pickup_end }}</div>
+              </div>
+
+              <div class="mt-auto d-flex justify-content-between align-items-center pt-2 border-top border-secondary">
+                <a href="{{ url_for('donations.detail', donation_id=donation._id) }}" class="btn btn-sm btn-share-outline">Details</a>
+                <button type="button" class="btn btn-sm btn-share-orange" data-bs-toggle="modal" data-bs-target="#requestModal"
+                        data-id="{{ donation._id }}"
+                        data-title="{{ donation.title }}"
+                        data-unit="{{ donation.unit }}"
+                        data-max="{{ [donation.remaining_quantity, 10] | min }}">
+                  Request
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="fs-card text-center py-5">
+      <i class="bi bi-inbox fs-1 text-secondary mb-3 d-block"></i>
+      <h4 class="text-white">No Matching Food Items Found</h4>
+      <p class="text-secondary small">Please adjust your search or check back later.</p>
+    </div>
+  {% endif %}
+</div>
+
+<!-- Simple Recipient Request Modal -->
+<div class="modal fade" id="requestModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+      <div class="modal-header border-bottom border-secondary">
+        <h5 class="modal-title text-white">Request Food</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{{ url_for('recipient.submit') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="hidden" name="donation_id" id="simpleDonationId">
+        <div class="modal-body">
+          <div class="fw-bold text-white mb-2" id="simpleTitle"></div>
+          <div class="mb-3">
+            <label class="form-label">Quantity Needed (<span id="simpleUnit">kg</span>)</label>
+            <input type="number" step="0.5" min="0.5" max="10" name="requested_quantity" id="simpleQty" class="form-control" required>
+            <span class="small text-secondary">Individual limit: max 10 units.</span>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Intended Collection Time</label>
+            <input type="text" name="intended_pickup_time" placeholder="e.g. Today 4:00 PM" class="form-control" required>
+          </div>
+        </div>
+        <div class="modal-footer border-top border-secondary">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-share-orange btn-sm">Confirm Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const reqModal = document.getElementById('requestModal');
+  if (reqModal) {
+    reqModal.addEventListener('show.bs.modal', function(e) {
+      const btn = e.relatedTarget;
+      document.getElementById('simpleDonationId').value = btn.getAttribute('data-id');
+      document.getElementById('simpleTitle').textContent = btn.getAttribute('data-title');
+      document.getElementById('simpleUnit').textContent = btn.getAttribute('data-unit');
+      document.getElementById('simpleQty').max = btn.getAttribute('data-max');
+    });
+  }
+});
+</script>
+{% endblock %}

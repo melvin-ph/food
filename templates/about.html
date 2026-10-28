@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}About Us — FoodShare{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  
+  <div class="text-center mb-5">
+    <span class="badge px-3 py-1 mb-2" style="background: rgba(57, 211, 83, 0.15); color: var(--green-primary); border: 1px solid rgba(57, 211, 83, 0.3);">
+      Our Purpose & Mission
+    </span>
+    <h1 class="display-5 fw-bold text-white">Good Food. Brighter Tomorrows.</h1>
+    <p class="text-secondary mx-auto" style="max-width: 650px;">
+      FoodShare was created to eliminate the paradox of hunger and food waste through real-time redistribution logistics.
+    </p>
+  </div>
+
+  <div class="row g-4 align-items-center mb-5">
+    <div class="col-lg-6">
+      <div class="fs-card p-4 p-md-5">
+        <h3 class="fw-bold text-white mb-3">Connecting Surplus with Need</h3>
+        <p class="text-secondary small mb-3">
+          Every day, commercial kitchens, luxury hotels, corporate dining halls, and banquet organizers prepare nutritious food that remains unserved. At the same time, charitable shelters and underserved community members struggle with consistent access to fresh, healthy meals.
+        </p>
+        <p class="text-secondary small mb-3">
+          FoodShare solves this logistics gap by giving donors a rapid, safe channel to list surplus meals in seconds. Nearby verified NGOs, soup kitchens, and individual recipients are alerted immediately, reserving and picking up items before their safety windows close.
+        </p>
+        <div class="d-flex gap-3 mt-4">
+          <div class="p-3 rounded flex-grow-1" style="background: var(--bg-elevated); border: 1px solid var(--border-color);">
+            <div class="fs-4 fw-bold text-success">Zero Waste</div>
+            <div class="small text-secondary">Aiming for 100% surplus diversion from landfills.</div>
+          </div>
+          <div class="p-3 rounded flex-grow-1" style="background: var(--bg-elevated); border: 1px solid var(--border-color);">
+            <div class="fs-4 fw-bold text-warning">Dignity First</div>
+            <div class="small text-secondary">Respectful, discreet, and equitable food access.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-6">
+      <img src="{{ url_for('static', filename='images/community-support.jpg') }}" alt="Community gathered sharing meals" class="img-fluid rounded border border-secondary" style="height: 400px; width: 100%; object-fit: cover;">
+    </div>
+  </div>
+
+  <div class="fs-card p-4 p-md-5 text-center">
+    <h3 class="fw-bold text-white mb-3">Join the Movement</h3>
+    <p class="text-secondary small mx-auto mb-4" style="max-width: 580px;">
+      Whether you are an executive chef with 30 surplus banquet meals or a charitable organization feeding 100 families daily, FoodShare provides the technology to collaborate seamlessly.
+    </p>
+    <div class="d-flex justify-content-center gap-3">
+      <a href="{{ url_for('auth.register', role='donor') }}" class="btn btn-share-green btn-lg px-4">Register as Food Donor</a>
+      <a href="{{ url_for('auth.register', role='ngo') }}" class="btn btn-share-orange btn-lg px-4">Register as NGO</a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

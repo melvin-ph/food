@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+
+{% block title %}My Donations — Donor Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-heading">Donor Portal</div>
+    <a href="{{ url_for('donor.dashboard') }}" class="sidebar-nav-item">
+      <i class="bi bi-grid-fill"></i> Dashboard
+    </a>
+    <a href="{{ url_for('donor.donations') }}" class="sidebar-nav-item active">
+      <i class="bi bi-box-seam"></i> My Donations
+    </a>
+    <a href="{{ url_for('donor.create') }}" class="sidebar-nav-item">
+      <i class="bi bi-plus-circle"></i> Add New Donation
+    </a>
+    <a href="{{ url_for('donor.requests') }}" class="sidebar-nav-item">
+      <i class="bi bi-inbox"></i> Donation Requests
+    </a>
+    <a href="{{ url_for('donor.requests', status='Approved') }}" class="sidebar-nav-item">
+      <i class="bi bi-truck"></i> Pickup & Delivery
+    </a>
+    <a href="{{ url_for('donor.reports') }}" class="sidebar-nav-item">
+      <i class="bi bi-bar-chart-line"></i> Impact Reports
+    </a>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+      <div>
+        <h2 class="fw-bold text-white mb-1">My Food Donations</h2>
+        <p class="text-secondary small mb-0">Track, manage, update, or cancel your surplus food listings.</p>
+      </div>
+      <div>
+        <a href="{{ url_for('donor.create') }}" class="btn btn-share-green">
+          <i class="bi bi-plus-lg"></i> Add New Donation
+        </a>
+      </div>
+    </div>
+
+    <!-- Filters & Search Bar -->
+    <div class="fs-card p-3 mb-4">
+      <form method="GET" action="{{ url_for('donor.donations') }}" class="row g-2 align-items-center">
+        <div class="col-md-5">
+          <div class="input-group">
+            <span class="input-group-text bg-dark border-secondary text-secondary"><i class="bi bi-search"></i></span>
+            <input type="text" name="search" class="form-control" placeholder="Search by food name or description..." value="{{ request.args.get('search', '') }}">
+          </div>
+        </div>
+        <div class="col-md-4">
+          <select name="status" class="form-select" onchange="this.form.submit()">
+            <option value="All" {% if not active_status or active_status == 'All' %}selected{% endif %}>All Statuses</option>
+            <option value="Available" {% if active_status == 'Available' %}selected{% endif %}>Available</option>
+            <option value="Partially Reserved" {% if active_status == 'Partially Reserved' %}selected{% endif %}>Partially Reserved</option>
+            <option value="Fully Reserved" {% if active_status == 'Fully Reserved' %}selected{% endif %}>Fully Reserved</option>
+            <option value="Collected" {% if active_status == 'Collected' %}selected{% endif %}>Collected</option>
+            <option value="Completed" {% if active_status == 'Completed' %}selected{% endif %}>Completed</option>
+            <option value="Cancelled" {% if active_status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+          </select>
+        </div>
+        <div class="col-md-3 d-flex gap-2">
+          <button type="submit" class="btn btn-share-outline w-100">Filter</button>
+          <a href="{{ url_for('donor.donations') }}" class="btn btn-outline-secondary">Reset</a>
+        </div>
+      </form>
+    </div>
+
+    <!-- Donations Table -->
+    <div class="fs-card p-4">
+      <div class="table-responsive">
+        <table class="table-fs">
+          <thead>
+            <tr>
+              <th>Food Item</th>
+              <th>Category</th>
+              <th>Total Qty</th>
+              <th>Remaining</th>
+              <th>Available Until</th>
+              <th>Requests</th>
+              <th>Status</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if donations %}
+              {% for d in donations %}
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <img src="{{ d.image_path or url_for('static', filename='images/prepared-meals.jpg') }}" alt="{{ d.title }}" class="rounded" style="width: 40px; height: 40px; object-fit: cover;">
+                      <div>
+                        <a href="{{ url_for('donations.detail', donation_id=d._id) }}" class="fw-bold text-white text-decoration-none">
+                          {{ d.title }}
+                        </a>
+                        <div class="small text-secondary">{{ d.food_classification }}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td>{{ d.category }}</td>
+                  <td>{{ d.quantity }} {{ d.unit }}</td>
+                  <td>
+                    <span class="fw-bold {% if d.remaining_quantity > 0 %}text-success{% else %}text-secondary{% endif %}">
+                      {{ d.remaining_quantity }} {{ d.unit }}
+                    </span>
+                  </td>
+                  <td>{{ d.available_until | format_datetime }}</td>
+                  <td>
+                    <a href="{{ url_for('donor.requests') }}" class="badge bg-dark border border-secondary text-secondary">
+                      {{ d.requests_count }} request(s)
+                    </a>
+                  </td>
+                  <td><span class="{{ d.status | status_badge }}">{{ d.status }}</span></td>
+                  <td class="text-end">
+                    <div class="d-inline-flex gap-1">
+                      <a href="{{ url_for('donations.detail', donation_id=d._id) }}" class="btn btn-sm btn-share-outline" title="View Details">
+                        <i class="bi bi-eye"></i>
+                      </a>
+                      {% if d.status in ['Available', 'Partially Reserved'] %}
+                        <a href="{{ url_for('donor.edit', donation_id=d._id) }}" class="btn btn-sm btn-outline-info" title="Edit Listing">
+                          <i class="bi bi-pencil"></i>
+                        </a>
+                        <form method="POST" action="{{ url_for('donor.cancel', donation_id=d._id) }}" onsubmit="return confirm('Are you sure you want to cancel this listing?');" class="d-inline">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                          <button type="submit" class="btn btn-sm btn-outline-danger" title="Cancel Listing">
+                            <i class="bi bi-x-lg"></i>
+                          </button>
+                        </form>
+                      {% endif %}
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="8" class="text-center py-5 text-secondary">
+                  No donations found matching your filter criteria.
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

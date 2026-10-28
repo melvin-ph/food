@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Requests — Donor Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-heading">Donor Portal</div>
+    <a href="{{ url_for('donor.dashboard') }}" class="sidebar-nav-item">
+      <i class="bi bi-grid-fill"></i> Dashboard
+    </a>
+    <a href="{{ url_for('donor.donations') }}" class="sidebar-nav-item">
+      <i class="bi bi-box-seam"></i> My Donations
+    </a>
+    <a href="{{ url_for('donor.create') }}" class="sidebar-nav-item">
+      <i class="bi bi-plus-circle"></i> Add New Donation
+    </a>
+    <a href="{{ url_for('donor.requests') }}" class="sidebar-nav-item active">
+      <i class="bi bi-inbox"></i> Donation Requests
+    </a>
+    <a href="{{ url_for('donor.reports') }}" class="sidebar-nav-item">
+      <i class="bi bi-bar-chart-line"></i> Impact Reports
+    </a>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+      <div>
+        <h2 class="fw-bold text-white mb-1">Incoming Donation Requests</h2>
+        <p class="text-secondary small mb-0">Review requests from NGOs and recipients, approve allocations, and confirm food handovers.</p>
+      </div>
+
+      <!-- Status Filters -->
+      <div class="btn-group btn-group-sm" role="group">
+        <a href="{{ url_for('donor.requests') }}" class="btn {% if not active_status %}btn-share-green{% else %}btn-share-outline{% endif %}">All</a>
+        <a href="{{ url_for('donor.requests', status='Pending') }}" class="btn {% if active_status == 'Pending' %}btn-share-green{% else %}btn-share-outline{% endif %}">Pending</a>
+        <a href="{{ url_for('donor.requests', status='Approved') }}" class="btn {% if active_status == 'Approved' %}btn-share-green{% else %}btn-share-outline{% endif %}">Approved / Pickup</a>
+        <a href="{{ url_for('donor.requests', status='Collected') }}" class="btn {% if active_status == 'Collected' %}btn-share-green{% else %}btn-share-outline{% endif %}">Collected</a>
+      </div>
+    </div>
+
+    <!-- Requests Table -->
+    <div class="fs-card p-4">
+      <div class="table-responsive">
+        <table class="table-fs">
+          <thead>
+            <tr>
+              <th>Request ID</th>
+              <th>Recipient / Organization</th>
+              <th>Donation Item</th>
+              <th>Requested Qty</th>
+              <th>Intended Pickup</th>
+              <th>Recipient Notes</th>
+              <th>Status</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if requests %}
+              {% for req in requests %}
+                <tr>
+                  <td><code class="text-secondary small">#{{ str(req._id)[-6:] }}</code></td>
+                  <td>
+                    <div class="fw-bold text-white">{{ req.recipient_name }}</div>
+                    <div class="small text-secondary">
+                      <span class="badge bg-secondary text-uppercase" style="font-size: 0.65rem;">{{ req.recipient_role }}</span>
+                      {% if req.recipient_phone %} • {{ req.recipient_phone }}{% endif %}
+                    </div>
+                  </td>
+                  <td>
+                    <a href="{{ url_for('donations.detail', donation_id=req.donation_id) }}" class="text-white fw-semibold text-decoration-none">
+                      {{ req.donation_title }}
+                    </a>
+                  </td>
+                  <td>
+                    <span class="fw-bold text-warning">{{ req.requested_quantity }} {{ req.unit }}</span>
+                  </td>
+                  <td>{{ req.intended_pickup_time or 'Standard Window' }}</td>
+                  <td>
+                    <span class="small text-secondary">{{ req.notes or 'None' }}</span>
+                  </td>
+                  <td>
+                    <span class="{{ req.status | status_badge }}">{{ req.status }}</span>
+                  </td>
+                  <td class="text-end">
+                    {% if req.status == 'Pending' %}
+                      <div class="d-inline-flex gap-1">
+                        <!-- Accept Form -->
+                        <form method="POST" action="{{ url_for('donor.review_req', request_id=req._id) }}">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                          <input type="hidden" name="action" value="approve">
+                          <button type="submit" class="btn btn-sm btn-share-green" title="Accept & Reserve Quantity">
+                            <i class="bi bi-check-lg me-1"></i> Accept
+                          </button>
+                        </form>
+                        <!-- Decline Modal Trigger -->
+                        <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#declineModal{{ req._id }}">
+                          Decline
+                        </button>
+                      </div>
+
+                      <!-- Decline Modal -->
+                      <div class="modal fade" id="declineModal{{ req._id }}" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                          <div class="modal-content text-start" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+                            <div class="modal-header border-bottom border-secondary">
+                              <h5 class="modal-title text-white">Decline Request</h5>
+                              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form method="POST" action="{{ url_for('donor.review_req', request_id=req._id) }}">
+                              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                              <input type="hidden" name="action" value="reject">
+                              <div class="modal-body">
+                                <p class="text-secondary small">Provide a reason so the recipient understands why this request cannot be fulfilled (e.g. quantity exhausted, expired, facility closed):</p>
+                                <textarea name="notes" class="form-control" rows="3" placeholder="Reason for declining..." required></textarea>
+                              </div>
+                              <div class="modal-footer border-top border-secondary">
+                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-danger btn-sm">Confirm Decline</button>
+                              </div>
+                            </form>
+                          </div>
+                        </div>
+                      </div>
+
+                    {% elif req.status == 'Approved' %}
+                      <!-- Confirm Handover Button -->
+                      <form method="POST" action="{{ url_for('donor.collect_req', request_id=req._id) }}" onsubmit="return confirm('Confirm that this recipient has collected the food?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button type="submit" class="btn btn-sm btn-share-orange">
+                          <i class="bi bi-check2-all me-1"></i> Confirm Collection
+                        </button>
+                      </form>
+                    {% elif req.status in ['Collected', 'Completed'] %}
+                      <span class="small text-success"><i class="bi bi-check-circle-fill me-1"></i> Handover Complete</span>
+                    {% else %}
+                      <span class="small text-secondary">{{ req.status }}</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="8" class="text-center py-5 text-secondary">
+                  No requests found for this filter.
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

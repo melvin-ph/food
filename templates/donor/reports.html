@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block title %}Donor Impact Reports — FoodShare{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-heading">Donor Portal</div>
+    <a href="{{ url_for('donor.dashboard') }}" class="sidebar-nav-item">
+      <i class="bi bi-grid-fill"></i> Dashboard
+    </a>
+    <a href="{{ url_for('donor.donations') }}" class="sidebar-nav-item">
+      <i class="bi bi-box-seam"></i> My Donations
+    </a>
+    <a href="{{ url_for('donor.create') }}" class="sidebar-nav-item">
+      <i class="bi bi-plus-circle"></i> Add New Donation
+    </a>
+    <a href="{{ url_for('donor.requests') }}" class="sidebar-nav-item">
+      <i class="bi bi-inbox"></i> Donation Requests
+    </a>
+    <a href="{{ url_for('donor.reports') }}" class="sidebar-nav-item active">
+      <i class="bi bi-bar-chart-line"></i> Impact Reports
+    </a>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+      <h2 class="fw-bold text-white mb-1">Your Sustainability & Hunger Impact</h2>
+      <p class="text-secondary small mb-0">Summary of food rescued, carbon emission reduction estimates, and community reach.</p>
+    </div>
+
+    <!-- Impact Cards -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-4">
+        <div class="fs-card p-4">
+          <div class="text-secondary small mb-1">Total Food Rescued</div>
+          <div class="display-6 fw-bold text-success">{{ stats.redistributed_qty }} kg</div>
+          <p class="small text-secondary mt-2 mb-0">Diverted from landfill disposal directly to nutritious meals.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="fs-card p-4">
+          <div class="text-secondary small mb-1">Completed Collections</div>
+          <div class="display-6 fw-bold text-warning">{{ stats.collected_donations }}</div>
+          <p class="small text-secondary mt-2 mb-0">Successfully handed over to verified charities and recipients.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="fs-card p-4">
+          <div class="text-secondary small mb-1">Estimated CO₂ Offset</div>
+          <div class="display-6 fw-bold text-info">{{ (stats.redistributed_qty * 2.5) | round(1) }} kg</div>
+          <p class="small text-secondary mt-2 mb-0">GHG emissions prevented based on FAO organic decomposition factors.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Completed Collections Log -->
+    <div class="fs-card p-4">
+      <h5 class="fw-bold text-white mb-3">Redistribution History</h5>
+      <div class="table-responsive">
+        <table class="table-fs">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Food Item</th>
+              <th>Recipient Organization</th>
+              <th>Quantity Given</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if completed_requests %}
+              {% for req in completed_requests %}
+                <tr>
+                  <td>{{ req.collected_at | format_datetime if req.collected_at else req.updated_at | format_datetime }}</td>
+                  <td class="fw-bold text-white">{{ req.donation_title }}</td>
+                  <td>{{ req.recipient_name }} ({{ req.recipient_role }})</td>
+                  <td class="text-success fw-bold">{{ req.requested_quantity }} {{ req.unit }}</td>
+                  <td><span class="badge-success">Verified Handover</span></td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="5" class="text-center py-4 text-secondary">
+                  No completed collections recorded yet. Once food handovers are confirmed, they will show here.
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

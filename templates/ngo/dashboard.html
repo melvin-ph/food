@@ -1,0 +1,354 @@
+{% extends 'base.html' %}
+
+{% block title %}NGO Dashboard — FoodShare{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <!-- NGO Sidebar (matches mockup) -->
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-heading">NGO Portal</div>
+    
+    <a href="{{ url_for('ngo.dashboard') }}" class="sidebar-nav-item active-orange">
+      <i class="bi bi-grid-fill"></i> Dashboard
+    </a>
+    <a href="{{ url_for('ngo.browse') }}" class="sidebar-nav-item">
+      <i class="bi bi-search"></i> Browse Donations
+    </a>
+    <a href="{{ url_for('ngo.requests') }}" class="sidebar-nav-item">
+      <i class="bi bi-hourglass-split"></i> My Requests
+      {% if submitted_count > 0 %}
+        <span class="badge bg-warning text-dark ms-auto">{{ submitted_count }}</span>
+      {% endif %}
+    </a>
+    <a href="{{ url_for('ngo.collections') }}" class="sidebar-nav-item">
+      <i class="bi bi-calendar-check"></i> Collection History
+    </a>
+    <a href="{{ url_for('notifications.index') }}" class="sidebar-nav-item">
+      <i class="bi bi-bell"></i> Notifications
+      {% if unread_notifications_count > 0 %}
+        <span class="badge bg-danger ms-auto">{{ unread_notifications_count }}</span>
+      {% endif %}
+    </a>
+
+    <div class="sidebar-heading mt-4">Account</div>
+    <a href="{{ url_for('auth.profile') }}" class="sidebar-nav-item">
+      <i class="bi bi-person"></i> Profile
+    </a>
+    <a href="{{ url_for('auth.profile') }}" class="sidebar-nav-item">
+      <i class="bi bi-gear"></i> Settings
+    </a>
+    <a href="{{ url_for('auth.logout') }}" class="sidebar-nav-item text-danger">
+      <i class="bi bi-box-arrow-right"></i> Logout
+    </a>
+  </aside>
+
+  <!-- NGO Main Content -->
+  <main class="dashboard-main">
+    
+    <!-- Header with user profile badge -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+      <div>
+        <h2 class="fw-bold text-white mb-1">NGO Dashboard</h2>
+        <p class="text-secondary small mb-0">Find and request available food donations for your community beneficiaries.</p>
+      </div>
+
+      <div class="d-flex align-items-center gap-3">
+        <a href="{{ url_for('ngo.browse') }}" class="btn btn-share-orange">
+          <i class="bi bi-search me-1"></i> Browse All Surplus Food
+        </a>
+        <div class="d-flex align-items-center gap-2 p-2 rounded" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+          <div class="rounded-circle bg-warning text-dark d-flex align-items-center justify-content-center fw-bold" style="width: 36px; height: 36px;">
+            {{ (user.org_name or 'N')[:2].upper() }}
+          </div>
+          <div class="pe-2">
+            <div class="small fw-bold text-white lh-1">{{ user.org_name or user.contact_name }}</div>
+            <span class="badge bg-warning-subtle text-warning p-0" style="font-size: 0.72rem;">Verified NGO</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary Metrics Cards (Matching Mockup: Available Donations, My Requests, Collected, People Served) -->
+    <div class="row g-3 mb-4">
+      <div class="col-sm-6 col-xl-3">
+        <div class="fs-card d-flex align-items-center justify-content-between p-3">
+          <div>
+            <div class="text-secondary small mb-1">Available Donations</div>
+            <div class="display-6 fw-bold text-success">{{ available_donations_count }}</div>
+          </div>
+          <div class="stat-icon" style="background: rgba(57, 211, 83, 0.15); color: var(--green-primary); border-color: rgba(57, 211, 83, 0.3);">
+            <i class="bi bi-box2-heart"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-xl-3">
+        <div class="fs-card d-flex align-items-center justify-content-between p-3">
+          <div>
+            <div class="text-secondary small mb-1">My Requests</div>
+            <div class="display-6 fw-bold text-warning">{{ submitted_count }}</div>
+          </div>
+          <div class="stat-icon" style="background: rgba(255, 138, 36, 0.15); color: var(--orange-warm); border-color: rgba(255, 138, 36, 0.3);">
+            <i class="bi bi-hourglass-split"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-xl-3">
+        <div class="fs-card d-flex align-items-center justify-content-between p-3">
+          <div>
+            <div class="text-secondary small mb-1">Collected</div>
+            <div class="display-6 fw-bold text-info">{{ collected_count }}</div>
+          </div>
+          <div class="stat-icon" style="background: rgba(56, 189, 248, 0.15); color: var(--state-info); border-color: rgba(56, 189, 248, 0.3);">
+            <i class="bi bi-check2-circle"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-sm-6 col-xl-3">
+        <div class="fs-card d-flex align-items-center justify-content-between p-3">
+          <div>
+            <div class="text-secondary small mb-1">People Served</div>
+            <div class="display-6 fw-bold text-danger">{{ ((total_food_collected * 3.2) | int) + 120 }}+</div>
+          </div>
+          <div class="stat-icon" style="background: rgba(255, 90, 121, 0.15); color: #FF5A79; border-color: rgba(255, 90, 121, 0.3);">
+            <i class="bi bi-gift-fill"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Section: Nearby Food Donations + Impact This Month Chart -->
+    <div class="row g-4 mb-4">
+      
+      <!-- Nearby / Available Food Donations List (Matching Mockup) -->
+      <div class="col-lg-7">
+        <div class="fs-card p-4 h-100">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-white mb-0">Nearby Food Donations</h5>
+            <a href="{{ url_for('ngo.browse') }}" class="small text-decoration-none" style="color: var(--orange-warm);">View All</a>
+          </div>
+
+          <div class="d-flex flex-column gap-3">
+            {% if nearby_donations %}
+              {% for d in nearby_donations %}
+                <div class="p-3 rounded d-flex align-items-center justify-content-between gap-3" style="background: var(--bg-elevated); border: 1px solid var(--border-color);">
+                  <div class="d-flex align-items-center gap-3 overflow-hidden">
+                    <img src="{{ d.image_path or url_for('static', filename='images/prepared-meals.jpg') }}" alt="{{ d.title }}" class="rounded" style="width: 58px; height: 58px; object-fit: cover;">
+                    <div>
+                      <div class="fw-bold text-white text-truncate">{{ d.title }}</div>
+                      <div class="small text-secondary"><i class="bi bi-geo-alt me-1 text-warning"></i>{{ d.donor_name }} • {{ d.pickup_address[:25] }}...</div>
+                      <div class="small text-info mt-1"><i class="bi bi-clock me-1"></i>Today, {{ d.pickup_start }} - {{ d.pickup_end }}</div>
+                    </div>
+                  </div>
+
+                  <div class="text-end flex-shrink-0">
+                    <div class="fw-bold text-white mb-2">{{ d.remaining_quantity }} {{ d.unit }}</div>
+                    <button type="button" class="btn btn-sm btn-share-green px-3" data-bs-toggle="modal" data-bs-target="#requestFoodModal"
+                            data-donation-id="{{ d._id }}"
+                            data-donation-title="{{ d.title }}"
+                            data-max-qty="{{ d.remaining_quantity }}"
+                            data-unit="{{ d.unit }}"
+                            data-address="{{ d.pickup_address }}"
+                            data-pickup-time="{{ d.pickup_start }} - {{ d.pickup_end }}">
+                      Request
+                    </button>
+                  </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <div class="text-center py-5 text-secondary">
+                No surplus food currently available. New listings appear in real time!
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      <!-- Impact This Month Chart.js Chart (Matching Mockup) -->
+      <div class="col-lg-5">
+        <div class="fs-card p-4 h-100">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="fw-bold text-white mb-0">Impact This Month</h5>
+            <span class="badge bg-secondary">Current Cycle</span>
+          </div>
+
+          <div style="height: 260px; position: relative;">
+            <canvas id="ngoImpactChart"></canvas>
+          </div>
+
+          <div class="d-flex justify-content-around text-center mt-3 pt-3 border-top" style="border-color: var(--border-color) !important;">
+            <div>
+              <div class="fw-bold text-warning fs-5">45</div>
+              <div class="text-secondary small" style="font-size: 0.75rem;">Meals Collected</div>
+            </div>
+            <div>
+              <div class="fw-bold text-danger fs-5">120</div>
+              <div class="text-secondary small" style="font-size: 0.75rem;">People Served</div>
+            </div>
+            <div>
+              <div class="fw-bold text-info fs-5">{{ total_food_collected + 350 }} kg</div>
+              <div class="text-secondary small" style="font-size: 0.75rem;">Food Saved</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Active Requests by this NGO -->
+    <div class="fs-card p-4">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h5 class="fw-bold text-white mb-0">Recent Request Status</h5>
+        <a href="{{ url_for('ngo.requests') }}" class="small text-decoration-none" style="color: var(--orange-warm);">Manage Requests</a>
+      </div>
+
+      <div class="table-responsive">
+        <table class="table-fs">
+          <thead>
+            <tr>
+              <th>Food Item</th>
+              <th>Donor Organization</th>
+              <th>Requested Qty</th>
+              <th>Status</th>
+              <th>Pickup Window</th>
+              <th class="text-end">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if my_requests %}
+              {% for req in my_requests %}
+                <tr>
+                  <td class="fw-bold text-white">{{ req.donation_title }}</td>
+                  <td>{{ req.donor_name }}</td>
+                  <td class="fw-bold text-warning">{{ req.requested_quantity }} {{ req.unit }}</td>
+                  <td><span class="{{ req.status | status_badge }}">{{ req.status }}</span></td>
+                  <td>{{ req.pickup_window }}</td>
+                  <td class="text-end">
+                    {% if req.status == 'Approved' %}
+                      <form method="POST" action="{{ url_for('ngo.confirm_pickup', request_id=req._id) }}" class="d-inline">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button type="submit" class="btn btn-sm btn-share-green py-1">
+                          Confirm Handover
+                        </button>
+                      </form>
+                    {% elif req.status == 'Pending' %}
+                      <form method="POST" action="{{ url_for('ngo.cancel_req', request_id=req._id) }}" class="d-inline">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button type="submit" class="btn btn-sm btn-outline-secondary py-1">
+                          Cancel
+                        </button>
+                      </form>
+                    {% else %}
+                      <span class="small text-secondary">{{ req.status }}</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="6" class="text-center py-4 text-secondary">
+                  You haven't requested any food yet. Browse available donations to request surplus food!
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- Reusable Request Food Modal -->
+<div class="modal fade" id="requestFoodModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+      <div class="modal-header border-bottom border-secondary">
+        <h5 class="modal-title text-white">Request Food Donation</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{{ url_for('ngo.submit') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="hidden" name="donation_id" id="modalDonationId">
+        
+        <div class="modal-body">
+          <div class="p-3 mb-3 rounded" style="background: var(--bg-elevated); border: 1px solid var(--border-color);">
+            <div class="fw-bold text-white" id="modalDonationTitle"></div>
+            <div class="small text-secondary mt-1">Available: <span class="text-success fw-bold" id="modalMaxQty"></span></div>
+            <div class="small text-secondary mt-1" id="modalPickupInfo"></div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Quantity Needed (<span id="modalQtyUnitLabel">kg</span>) *</label>
+            <input type="number" step="0.5" min="0.5" class="form-control" name="requested_quantity" id="modalQtyInput" required>
+            <span class="small text-secondary">Specify the exact quantity required for your beneficiaries.</span>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Intended Collection Time *</label>
+            <input type="text" class="form-control" name="intended_pickup_time" placeholder="e.g. Today at 03:30 PM" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Distribution Plan / Beneficiary Notes (Optional)</label>
+            <textarea class="form-control" name="notes" rows="2" placeholder="e.g. Feeding 45 children at community home..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer border-top border-secondary">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-share-orange btn-sm">Confirm & Submit Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const ctx = document.getElementById('ngoImpactChart');
+  if (ctx) {
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ['Meals Collected', 'People Served', 'Food Saved (kg)'],
+        datasets: [{
+          label: 'Impact',
+          data: [45, 120, {{ total_food_collected + 350 }}],
+          backgroundColor: [
+            '#FF8A24', // Warm orange
+            '#EF4444', // Red
+            '#8B5CF6'  // Purple
+          ],
+          borderRadius: 8,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          x: {
+            grid: { display: false },
+            ticks: { color: '#B9C2BB' }
+          },
+          y: {
+            grid: { color: '#303A32' },
+            ticks: { color: '#B9C2BB' },
+            beginAtZero: true
+          }
+        }
+      }
+    });
+  }
+});
+</script>
+{% endblock %}

@@ -1,0 +1,1408 @@
+{
+  "users": [
+    {
+      "email": "donor@foodshare.com",
+      "password_hash": "pbkdf2:sha256:1000000$hf7lQpCifKIgyN0v$1ce8a41cb87228371df14059049edc50091e687e3241815a21e50875009e6021",
+      "role": "donor",
+      "org_name": "Hotel Grand Plaza",
+      "contact_name": "Chef Rajesh Kumar",
+      "donor_type": "Hotel / Restaurant",
+      "phone": "+91 98765 43210",
+      "address": "45 Heritage Boulevard, MG Road Metro District",
+      "verified": true,
+      "status": "active",
+      "created_at": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      }
+    },
+    {
+      "email": "ngo@foodshare.com",
+      "password_hash": "pbkdf2:sha256:1000000$zVgbFwV1TYFTIrdK$ecaf268ae9e944d3b8660467f46118678fcf634017e4380cb28f946531f5b244",
+      "role": "ngo",
+      "org_name": "Helping Hands NGO",
+      "contact_name": "Ananya Roy",
+      "reg_number": "NGO-IND-2021-8842",
+      "service_area": "Central & East Metro Zones",
+      "description": "Dedicated to hunger eradication, daily community kitchens, and immediate surplus food recovery.",
+      "phone": "+91 98123 45678",
+      "address": "12 Community Centre Way, East District",
+      "verified": true,
+      "status": "active",
+      "created_at": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      }
+    },
+    {
+      "email": "user@foodshare.com",
+      "password_hash": "pbkdf2:sha256:1000000$nw4yGTijS5DiEj9p$521aa16918db23a9a7ae9629feea583a4c3880f5955b46c9a5ba0566e170270d",
+      "role": "recipient",
+      "name": "Priya Sharma",
+      "phone": "+91 99887 76655",
+      "service_area": "East District Neighborhood",
+      "address": "Flat 302, Greenview Apartments, Lake Road",
+      "verified": true,
+      "status": "active",
+      "created_at": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d15"
+      }
+    },
+    {
+      "email": "admin@foodshare.com",
+      "password_hash": "pbkdf2:sha256:1000000$BIwhuZhHqbcr6QAi$a4e7e00c9fda2065c0e8fb1c905a33eb59f28249416ebad9ebac330ef16aebae",
+      "role": "admin",
+      "name": "Platform Administrator",
+      "phone": "+91 90000 00000",
+      "address": "FoodShare Operations HQ",
+      "verified": true,
+      "status": "active",
+      "created_at": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d16"
+      }
+    }
+  ],
+  "donations": [
+    {
+      "donor_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "donor_name": "Hotel Grand Plaza",
+      "donor_contact": "+91 98765 43210",
+      "title": "Veg Dum Biryani & Raita",
+      "category": "Prepared Meals",
+      "description": "Aromatic long grain basmati rice with mixed vegetables and Indian spices, freshly prepared for afternoon banquet. Kept at safe warm temperature.",
+      "quantity": 25.0,
+      "unit": "kg",
+      "remaining_quantity": 15.0,
+      "food_classification": "Vegetarian",
+      "allergens": "Dairy (ghee/raita), Nuts (cashews)",
+      "storage_instructions": "Hot holding above 65\u00b0C or consume within 4 hours",
+      "packaging_details": "Food-grade stainless steel pots & insulated meal containers",
+      "preparation_time": "Today, 11:30 AM",
+      "available_from": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "available_until": {
+        "$date": "2026-10-29T08:38:51.535Z"
+      },
+      "pickup_start": "02:00 PM",
+      "pickup_end": "06:00 PM",
+      "pickup_address": "Hotel Grand Plaza Kitchen Gate 3, MG Road",
+      "contact_instructions": "Ask for Chef Rajesh at the service entry",
+      "accuracy_confirmed": true,
+      "image_path": "/static/images/veg-biryani.jpg",
+      "status": "Partially Reserved",
+      "created_at": {
+        "$date": "2026-10-28T05:38:51.535Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d17"
+      }
+    },
+    {
+      "donor_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "donor_name": "Hotel Grand Plaza",
+      "donor_contact": "+91 98765 43210",
+      "title": "Vegetable Fried Rice & Manchurian",
+      "category": "Prepared Meals",
+      "description": "Freshly cooked vegetable fried rice with crispy vegetable manchurian gravy in sealed food trays.",
+      "quantity": 15.0,
+      "unit": "kg",
+      "remaining_quantity": 15.0,
+      "food_classification": "Vegetarian",
+      "allergens": "Soy, Gluten",
+      "storage_instructions": "Keep warm or refrigerate immediately below 4\u00b0C",
+      "packaging_details": "Sealed heavy-duty food foil trays",
+      "preparation_time": "Today, 12:00 PM",
+      "available_from": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "available_until": {
+        "$date": "2026-10-30T08:38:51.535Z"
+      },
+      "pickup_start": "03:00 PM",
+      "pickup_end": "07:00 PM",
+      "pickup_address": "Hotel Grand Plaza Banquet Back Loading Dock",
+      "contact_instructions": "Call donor upon arrival at Gate 2",
+      "accuracy_confirmed": true,
+      "image_path": "/static/images/fried-rice.jpg",
+      "status": "Available",
+      "created_at": {
+        "$date": "2026-10-28T06:38:51.535Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d18"
+      }
+    },
+    {
+      "donor_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "donor_name": "Hotel Grand Plaza",
+      "donor_contact": "+91 98765 43210",
+      "title": "Fresh Organic Fruits Assortment",
+      "category": "Fresh Produce",
+      "description": "Wholesome crate of apples, bananas, sweet oranges, and seasonal melons, ripe and ready for consumption.",
+      "quantity": 20.0,
+      "unit": "kg",
+      "remaining_quantity": 20.0,
+      "food_classification": "Vegetarian",
+      "allergens": "None",
+      "storage_instructions": "Keep in cool, dry ventilated area",
+      "packaging_details": "Ventilated wooden fruit crates",
+      "preparation_time": "Freshly sorted morning harvest",
+      "available_from": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "available_until": {
+        "$date": "2026-10-31T08:38:51.535Z"
+      },
+      "pickup_start": "10:00 AM",
+      "pickup_end": "08:00 PM",
+      "pickup_address": "Hotel Grand Plaza Green Pantry Room",
+      "contact_instructions": "Ring doorbell at pantry reception",
+      "accuracy_confirmed": true,
+      "image_path": "/static/images/fresh-produce.jpg",
+      "status": "Available",
+      "created_at": {
+        "$date": "2026-10-28T03:38:51.535Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d19"
+      }
+    },
+    {
+      "donor_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "donor_name": "Hotel Grand Plaza",
+      "donor_contact": "+91 98765 43210",
+      "title": "Handcrafted Whole Wheat Rotis & Dal Tadka",
+      "category": "Prepared Meals",
+      "description": "Soft handmade rotis paired with nutritious yellow lentil dal prepared with minimal oil.",
+      "quantity": 30.0,
+      "unit": "servings",
+      "remaining_quantity": 0.0,
+      "food_classification": "Vegetarian",
+      "allergens": "Gluten (wheat)",
+      "storage_instructions": "Ready to eat immediately",
+      "packaging_details": "Clean insulated casserole packs",
+      "preparation_time": "Yesterday evening",
+      "available_from": {
+        "$date": "2026-10-27T08:38:51.535Z"
+      },
+      "available_until": {
+        "$date": "2026-10-28T20:38:51.535Z"
+      },
+      "pickup_start": "08:00 AM",
+      "pickup_end": "12:00 PM",
+      "pickup_address": "Hotel Grand Plaza Staff Dining Entrance",
+      "contact_instructions": "Security office check-in",
+      "accuracy_confirmed": true,
+      "image_path": "/static/images/chapati-sabzi.jpg",
+      "status": "Collected",
+      "created_at": {
+        "$date": "2026-10-27T08:38:51.535Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d1a"
+      }
+    },
+    {
+      "donor_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "donor_name": "Hotel Grand Plaza",
+      "donor_contact": "+91 98765 43210",
+      "title": "Automated Test Dal Makhani",
+      "category": "Prepared Meals",
+      "description": "Rich slow-cooked lentils with fresh cream.",
+      "quantity": 20.0,
+      "unit": "kg",
+      "remaining_quantity": 12.0,
+      "food_classification": "Vegetarian",
+      "allergens": "Dairy",
+      "storage_instructions": "Hot hold above 65\u00b0C",
+      "packaging_details": "Sealed insulated tubs",
+      "preparation_time": "",
+      "available_from": {
+        "$date": "2026-10-28T08:59:26.496Z"
+      },
+      "available_until": {
+        "$date": "2026-10-30T08:59:26.495Z"
+      },
+      "pickup_start": "01:00 PM",
+      "pickup_end": "05:00 PM",
+      "pickup_address": "Hotel Kitchen Test Gate",
+      "contact_instructions": "",
+      "accuracy_confirmed": true,
+      "image_path": "/static/images/prepared-meals.jpg",
+      "status": "Partially Reserved",
+      "created_at": {
+        "$date": "2026-10-28T08:59:26.496Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T09:01:02.627Z"
+      },
+      "_id": {
+        "$oid": "6ae1b96e5315a134d09fdd1c"
+      }
+    },
+    {
+      "donor_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "donor_name": "Hotel Grand Plaza",
+      "donor_contact": "+91 98765 43210",
+      "title": "Automated Test Dal Makhani",
+      "category": "Prepared Meals",
+      "description": "Rich slow-cooked lentils with fresh cream.",
+      "quantity": 20.0,
+      "unit": "kg",
+      "remaining_quantity": 20.0,
+      "food_classification": "Vegetarian",
+      "allergens": "Dairy",
+      "storage_instructions": "Hot hold above 65\u00b0C",
+      "packaging_details": "Sealed insulated tubs",
+      "preparation_time": "",
+      "available_from": {
+        "$date": "2026-10-28T09:01:00.175Z"
+      },
+      "available_until": {
+        "$date": "2026-10-30T09:01:00.172Z"
+      },
+      "pickup_start": "01:00 PM",
+      "pickup_end": "05:00 PM",
+      "pickup_address": "Hotel Kitchen Test Gate",
+      "contact_instructions": "",
+      "accuracy_confirmed": true,
+      "image_path": "/static/images/prepared-meals.jpg",
+      "status": "Available",
+      "created_at": {
+        "$date": "2026-10-28T09:01:00.175Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T09:01:00.175Z"
+      },
+      "_id": {
+        "$oid": "6ae1b9ccd298aef904b0deaa"
+      }
+    },
+    {
+      "donor_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "donor_name": "Hotel Grand Plaza",
+      "donor_contact": "+91 98765 43210",
+      "title": "Automated Test Dal Makhani",
+      "category": "Prepared Meals",
+      "description": "Rich slow-cooked lentils with fresh cream.",
+      "quantity": 20.0,
+      "unit": "kg",
+      "remaining_quantity": 20.0,
+      "food_classification": "Vegetarian",
+      "allergens": "Dairy",
+      "storage_instructions": "Hot hold above 65\u00b0C",
+      "packaging_details": "Sealed insulated tubs",
+      "preparation_time": "",
+      "available_from": {
+        "$date": "2026-10-28T09:02:13.459Z"
+      },
+      "available_until": {
+        "$date": "2026-10-30T09:02:13.456Z"
+      },
+      "pickup_start": "01:00 PM",
+      "pickup_end": "05:00 PM",
+      "pickup_address": "Hotel Kitchen Test Gate",
+      "contact_instructions": "",
+      "accuracy_confirmed": true,
+      "image_path": "/static/images/prepared-meals.jpg",
+      "status": "Available",
+      "created_at": {
+        "$date": "2026-10-28T09:02:13.459Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T09:02:13.459Z"
+      },
+      "_id": {
+        "$oid": "6ae1ba159f936d40e52073ce"
+      }
+    },
+    {
+      "donor_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "donor_name": "Hotel Grand Plaza",
+      "donor_contact": "+91 98765 43210",
+      "title": "Automated Test Dal Makhani 1793178205",
+      "category": "Prepared Meals",
+      "description": "Rich slow-cooked lentils with fresh cream.",
+      "quantity": 20.0,
+      "unit": "kg",
+      "remaining_quantity": 12.0,
+      "food_classification": "Vegetarian",
+      "allergens": "Dairy",
+      "storage_instructions": "Hot hold above 65\u00b0C",
+      "packaging_details": "Sealed insulated tubs",
+      "preparation_time": "",
+      "available_from": {
+        "$date": "2026-10-28T09:03:26.317Z"
+      },
+      "available_until": {
+        "$date": "2026-10-30T09:03:26.314Z"
+      },
+      "pickup_start": "01:00 PM",
+      "pickup_end": "05:00 PM",
+      "pickup_address": "Hotel Kitchen Test Gate",
+      "contact_instructions": "",
+      "accuracy_confirmed": true,
+      "image_path": "/static/images/prepared-meals.jpg",
+      "status": "Partially Reserved",
+      "created_at": {
+        "$date": "2026-10-28T09:03:26.317Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T09:03:28.787Z"
+      },
+      "_id": {
+        "$oid": "6ae1ba5e9509c6d76af16b04"
+      }
+    },
+    {
+      "donor_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "donor_name": "Hotel Grand Plaza",
+      "donor_contact": "+91 98765 43210",
+      "title": "Automated Test Dal Makhani 1793178495",
+      "category": "Prepared Meals",
+      "description": "Rich slow-cooked lentils with fresh cream.",
+      "quantity": 20.0,
+      "unit": "kg",
+      "remaining_quantity": 12.0,
+      "food_classification": "Vegetarian",
+      "allergens": "Dairy",
+      "storage_instructions": "Hot hold above 65\u00b0C",
+      "packaging_details": "Sealed insulated tubs",
+      "preparation_time": "",
+      "available_from": {
+        "$date": "2026-10-28T09:08:16.050Z"
+      },
+      "available_until": {
+        "$date": "2026-10-30T09:08:16.048Z"
+      },
+      "pickup_start": "01:00 PM",
+      "pickup_end": "05:00 PM",
+      "pickup_address": "Hotel Kitchen Test Gate",
+      "contact_instructions": "",
+      "accuracy_confirmed": true,
+      "image_path": "/static/images/prepared-meals.jpg",
+      "status": "Partially Reserved",
+      "created_at": {
+        "$date": "2026-10-28T09:08:16.050Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T09:08:18.030Z"
+      },
+      "_id": {
+        "$oid": "6ae1bb8055e8be53550958b7"
+      }
+    },
+    {
+      "donor_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "donor_name": "Hotel Grand Plaza",
+      "donor_contact": "+91 98765 43210",
+      "title": "Automated Test Dal Makhani 1793178611",
+      "category": "Prepared Meals",
+      "description": "Rich slow-cooked lentils with fresh cream.",
+      "quantity": 20.0,
+      "unit": "kg",
+      "remaining_quantity": 12.0,
+      "food_classification": "Vegetarian",
+      "allergens": "Dairy",
+      "storage_instructions": "Hot hold above 65\u00b0C",
+      "packaging_details": "Sealed insulated tubs",
+      "preparation_time": "",
+      "available_from": {
+        "$date": "2026-10-28T09:10:12.024Z"
+      },
+      "available_until": {
+        "$date": "2026-10-30T09:10:12.022Z"
+      },
+      "pickup_start": "01:00 PM",
+      "pickup_end": "05:00 PM",
+      "pickup_address": "Hotel Kitchen Test Gate",
+      "contact_instructions": "",
+      "accuracy_confirmed": true,
+      "image_path": "/static/images/prepared-meals.jpg",
+      "status": "Partially Reserved",
+      "created_at": {
+        "$date": "2026-10-28T09:10:12.024Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T09:10:13.984Z"
+      },
+      "_id": {
+        "$oid": "6ae1bbf46587e3ff1162c099"
+      }
+    }
+  ],
+  "donation_requests": [
+    {
+      "donation_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d17"
+      },
+      "donation_title": "Veg Dum Biryani & Raita",
+      "donor_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "donor_name": "Hotel Grand Plaza",
+      "recipient_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "recipient_name": "Helping Hands NGO",
+      "recipient_role": "ngo",
+      "recipient_phone": "+91 98123 45678",
+      "recipient_email": "ngo@foodshare.com",
+      "requested_quantity": 10.0,
+      "unit": "kg",
+      "approved_quantity": 10.0,
+      "intended_pickup_time": "Today at 03:30 PM",
+      "pickup_window": "02:00 PM - 06:00 PM",
+      "pickup_address": "Hotel Grand Plaza Kitchen Gate 3, MG Road",
+      "notes": "Will be distributed immediately at the City Shelter Ward 4.",
+      "donor_notes": "Please bring clean insulated boxes. Gate entry cleared.",
+      "status": "Approved",
+      "created_at": {
+        "$date": "2026-10-28T06:38:51.535Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T07:38:51.535Z"
+      },
+      "collected_at": null,
+      "completed_at": null,
+      "_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d1b"
+      }
+    },
+    {
+      "donation_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d1a"
+      },
+      "donation_title": "Handcrafted Whole Wheat Rotis & Dal Tadka",
+      "donor_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "donor_name": "Hotel Grand Plaza",
+      "recipient_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "recipient_name": "Helping Hands NGO",
+      "recipient_role": "ngo",
+      "recipient_phone": "+91 98123 45678",
+      "recipient_email": "ngo@foodshare.com",
+      "requested_quantity": 30.0,
+      "unit": "servings",
+      "approved_quantity": 30.0,
+      "intended_pickup_time": "Yesterday at 09:30 AM",
+      "pickup_window": "08:00 AM - 12:00 PM",
+      "pickup_address": "Hotel Grand Plaza Staff Dining Entrance",
+      "notes": "Distributed to 60 seniors at the community home.",
+      "donor_notes": "Collected on time. Great coordination!",
+      "status": "Collected",
+      "created_at": {
+        "$date": "2026-10-27T06:38:51.535Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-27T08:38:51.535Z"
+      },
+      "collected_at": {
+        "$date": "2026-10-27T08:38:51.535Z"
+      },
+      "completed_at": {
+        "$date": "2026-10-27T08:38:51.535Z"
+      },
+      "_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d1c"
+      }
+    },
+    {
+      "donation_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d18"
+      },
+      "donation_title": "Vegetable Fried Rice & Manchurian",
+      "donor_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "donor_name": "Hotel Grand Plaza",
+      "recipient_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d15"
+      },
+      "recipient_name": "Priya Sharma",
+      "recipient_role": "recipient",
+      "recipient_phone": "+91 99887 76655",
+      "recipient_email": "user@foodshare.com",
+      "requested_quantity": 3.0,
+      "unit": "kg",
+      "approved_quantity": 0,
+      "intended_pickup_time": "Today at 04:30 PM",
+      "pickup_window": "03:00 PM - 07:00 PM",
+      "pickup_address": "Hotel Grand Plaza Banquet Back Loading Dock",
+      "notes": "For my family and elderly neighbors.",
+      "donor_notes": "",
+      "status": "Pending",
+      "created_at": {
+        "$date": "2026-10-28T07:53:51.535Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T07:53:51.535Z"
+      },
+      "collected_at": null,
+      "completed_at": null,
+      "_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d1d"
+      }
+    },
+    {
+      "donation_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d18"
+      },
+      "donation_title": "Vegetable Fried Rice & Manchurian",
+      "donor_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "donor_name": "Hotel Grand Plaza",
+      "recipient_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "recipient_name": "Helping Hands NGO",
+      "recipient_role": "ngo",
+      "recipient_phone": "+91 98123 45678",
+      "recipient_email": "ngo@foodshare.com",
+      "requested_quantity": 5.0,
+      "unit": "kg",
+      "approved_quantity": 0,
+      "intended_pickup_time": "3pm",
+      "pickup_window": "03:00 PM - 07:00 PM",
+      "pickup_address": "Hotel Grand Plaza Banquet Back Loading Dock",
+      "notes": "",
+      "donor_notes": "",
+      "status": "Pending",
+      "created_at": {
+        "$date": "2026-10-28T09:00:10.799Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T09:00:10.799Z"
+      },
+      "collected_at": null,
+      "completed_at": null,
+      "_id": {
+        "$oid": "6ae1b99a44d1ca5ffefc1c77"
+      }
+    },
+    {
+      "donation_id": {
+        "$oid": "6ae1b96e5315a134d09fdd1c"
+      },
+      "donation_title": "Automated Test Dal Makhani",
+      "donor_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "donor_name": "Hotel Grand Plaza",
+      "recipient_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "recipient_name": "Helping Hands NGO",
+      "recipient_role": "ngo",
+      "recipient_phone": "+91 98123 45678",
+      "recipient_email": "ngo@foodshare.com",
+      "requested_quantity": 8.0,
+      "unit": "kg",
+      "approved_quantity": 8.0,
+      "intended_pickup_time": "Today at 02:30 PM",
+      "pickup_window": "01:00 PM - 05:00 PM",
+      "pickup_address": "Hotel Kitchen Test Gate",
+      "notes": "For shelter dinner",
+      "donor_notes": "Approved, gate security notified.",
+      "status": "Collected",
+      "created_at": {
+        "$date": "2026-10-28T09:01:01.397Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T10:10:12.489Z"
+      },
+      "collected_at": {
+        "$date": "2026-10-28T10:10:12.489Z"
+      },
+      "completed_at": null,
+      "_id": {
+        "$oid": "6ae1b9cdd298aef904b0deac"
+      }
+    },
+    {
+      "donation_id": {
+        "$oid": "6ae1ba5e9509c6d76af16b04"
+      },
+      "donation_title": "Automated Test Dal Makhani 1793178205",
+      "donor_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "donor_name": "Hotel Grand Plaza",
+      "recipient_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "recipient_name": "Helping Hands NGO",
+      "recipient_role": "ngo",
+      "recipient_phone": "+91 98123 45678",
+      "recipient_email": "ngo@foodshare.com",
+      "requested_quantity": 8.0,
+      "unit": "kg",
+      "approved_quantity": 8.0,
+      "intended_pickup_time": "Today at 02:30 PM",
+      "pickup_window": "01:00 PM - 05:00 PM",
+      "pickup_address": "Hotel Kitchen Test Gate",
+      "notes": "For shelter dinner",
+      "donor_notes": "Approved, gate security notified.",
+      "status": "Collected",
+      "created_at": {
+        "$date": "2026-10-28T09:03:27.537Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T09:03:30.037Z"
+      },
+      "collected_at": {
+        "$date": "2026-10-28T09:03:30.037Z"
+      },
+      "completed_at": null,
+      "_id": {
+        "$oid": "6ae1ba5f9509c6d76af16b06"
+      }
+    },
+    {
+      "donation_id": {
+        "$oid": "6ae1bb8055e8be53550958b7"
+      },
+      "donation_title": "Automated Test Dal Makhani 1793178495",
+      "donor_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "donor_name": "Hotel Grand Plaza",
+      "recipient_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "recipient_name": "Helping Hands NGO",
+      "recipient_role": "ngo",
+      "recipient_phone": "+91 98123 45678",
+      "recipient_email": "ngo@foodshare.com",
+      "requested_quantity": 8.0,
+      "unit": "kg",
+      "approved_quantity": 8.0,
+      "intended_pickup_time": "Today at 02:30 PM",
+      "pickup_window": "01:00 PM - 05:00 PM",
+      "pickup_address": "Hotel Kitchen Test Gate",
+      "notes": "For shelter dinner",
+      "donor_notes": "Approved, gate security notified.",
+      "status": "Collected",
+      "created_at": {
+        "$date": "2026-10-28T09:08:17.039Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T09:08:19.030Z"
+      },
+      "collected_at": {
+        "$date": "2026-10-28T09:08:19.030Z"
+      },
+      "completed_at": null,
+      "_id": {
+        "$oid": "6ae1bb8155e8be53550958b9"
+      }
+    },
+    {
+      "donation_id": {
+        "$oid": "6ae1bbf46587e3ff1162c099"
+      },
+      "donation_title": "Automated Test Dal Makhani 1793178611",
+      "donor_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "donor_name": "Hotel Grand Plaza",
+      "recipient_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "recipient_name": "Helping Hands NGO",
+      "recipient_role": "ngo",
+      "recipient_phone": "+91 98123 45678",
+      "recipient_email": "ngo@foodshare.com",
+      "requested_quantity": 8.0,
+      "unit": "kg",
+      "approved_quantity": 8.0,
+      "intended_pickup_time": "Today at 02:30 PM",
+      "pickup_window": "01:00 PM - 05:00 PM",
+      "pickup_address": "Hotel Kitchen Test Gate",
+      "notes": "For shelter dinner",
+      "donor_notes": "Approved, gate security notified.",
+      "status": "Collected",
+      "created_at": {
+        "$date": "2026-10-28T09:10:12.991Z"
+      },
+      "updated_at": {
+        "$date": "2026-10-28T09:10:14.981Z"
+      },
+      "collected_at": {
+        "$date": "2026-10-28T09:10:14.981Z"
+      },
+      "completed_at": null,
+      "_id": {
+        "$oid": "6ae1bbf46587e3ff1162c09b"
+      }
+    }
+  ],
+  "notifications": [
+    {
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "title": "New Request Pending Review",
+      "message": "Priya Sharma requested 3.0 kg of Vegetable Fried Rice & Manchurian.",
+      "link": "/donor/requests",
+      "type": "info",
+      "is_read": false,
+      "created_at": {
+        "$date": "2026-10-28T07:53:51.535Z"
+      },
+      "_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d1e"
+      }
+    },
+    {
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "title": "Request Approved!",
+      "message": "Your request for 10.0 kg of 'Veg Dum Biryani & Raita' has been approved! Pickup window: 02:00 PM - 06:00 PM.",
+      "link": "/ngo/requests",
+      "type": "success",
+      "is_read": false,
+      "created_at": {
+        "$date": "2026-10-28T07:38:51.535Z"
+      },
+      "_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d1f"
+      }
+    },
+    {
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "title": "New Food Request",
+      "message": "Helping Hands NGO requested 5.0 kg of 'Vegetable Fried Rice & Manchurian'.",
+      "link": "/donor/requests",
+      "type": "info",
+      "is_read": false,
+      "created_at": {
+        "$date": "2026-10-28T09:00:10.804Z"
+      },
+      "_id": {
+        "$oid": "6ae1b99a44d1ca5ffefc1c78"
+      }
+    },
+    {
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "title": "New Food Request",
+      "message": "Helping Hands NGO requested 8.0 kg of 'Automated Test Dal Makhani'.",
+      "link": "/donor/requests",
+      "type": "info",
+      "is_read": false,
+      "created_at": {
+        "$date": "2026-10-28T09:01:01.407Z"
+      },
+      "_id": {
+        "$oid": "6ae1b9cdd298aef904b0dead"
+      }
+    },
+    {
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "title": "Request Approved!",
+      "message": "Your request for 8.0 kg of 'Automated Test Dal Makhani' was approved! Check pickup instructions.",
+      "link": "/requests/my-requests",
+      "type": "success",
+      "is_read": false,
+      "created_at": {
+        "$date": "2026-10-28T09:01:02.645Z"
+      },
+      "_id": {
+        "$oid": "6ae1b9ced298aef904b0deaf"
+      }
+    },
+    {
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "title": "New Food Request",
+      "message": "Helping Hands NGO requested 8.0 kg of 'Automated Test Dal Makhani 1793178205'.",
+      "link": "/donor/requests",
+      "type": "info",
+      "is_read": false,
+      "created_at": {
+        "$date": "2026-10-28T09:03:27.547Z"
+      },
+      "_id": {
+        "$oid": "6ae1ba5f9509c6d76af16b07"
+      }
+    },
+    {
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "title": "Request Approved!",
+      "message": "Your request for 8.0 kg of 'Automated Test Dal Makhani 1793178205' was approved! Check pickup instructions.",
+      "link": "/requests/my-requests",
+      "type": "success",
+      "is_read": false,
+      "created_at": {
+        "$date": "2026-10-28T09:03:28.807Z"
+      },
+      "_id": {
+        "$oid": "6ae1ba609509c6d76af16b09"
+      }
+    },
+    {
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "title": "Food Collection Confirmed",
+      "message": "Collection for 'Automated Test Dal Makhani 1793178205' (8.0 kg) has been confirmed.",
+      "link": "/requests/my-requests",
+      "type": "success",
+      "is_read": false,
+      "created_at": {
+        "$date": "2026-10-28T09:03:30.051Z"
+      },
+      "_id": {
+        "$oid": "6ae1ba629509c6d76af16b0b"
+      }
+    },
+    {
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "title": "New Food Request",
+      "message": "Helping Hands NGO requested 8.0 kg of 'Automated Test Dal Makhani 1793178495'.",
+      "link": "/donor/requests",
+      "type": "info",
+      "is_read": false,
+      "created_at": {
+        "$date": "2026-10-28T09:08:17.047Z"
+      },
+      "_id": {
+        "$oid": "6ae1bb8155e8be53550958ba"
+      }
+    },
+    {
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "title": "Request Approved!",
+      "message": "Your request for 8.0 kg of 'Automated Test Dal Makhani 1793178495' was approved! Check pickup instructions.",
+      "link": "/requests/my-requests",
+      "type": "success",
+      "is_read": false,
+      "created_at": {
+        "$date": "2026-10-28T09:08:18.044Z"
+      },
+      "_id": {
+        "$oid": "6ae1bb8255e8be53550958bc"
+      }
+    },
+    {
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "title": "Food Collection Confirmed",
+      "message": "Collection for 'Automated Test Dal Makhani 1793178495' (8.0 kg) has been confirmed.",
+      "link": "/requests/my-requests",
+      "type": "success",
+      "is_read": false,
+      "created_at": {
+        "$date": "2026-10-28T09:08:19.038Z"
+      },
+      "_id": {
+        "$oid": "6ae1bb8355e8be53550958be"
+      }
+    },
+    {
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "title": "New Food Request",
+      "message": "Helping Hands NGO requested 8.0 kg of 'Automated Test Dal Makhani 1793178611'.",
+      "link": "/donor/requests",
+      "type": "info",
+      "is_read": false,
+      "created_at": {
+        "$date": "2026-10-28T09:10:12.998Z"
+      },
+      "_id": {
+        "$oid": "6ae1bbf46587e3ff1162c09c"
+      }
+    },
+    {
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "title": "Request Approved!",
+      "message": "Your request for 8.0 kg of 'Automated Test Dal Makhani 1793178611' was approved! Check pickup instructions.",
+      "link": "/requests/my-requests",
+      "type": "success",
+      "is_read": false,
+      "created_at": {
+        "$date": "2026-10-28T09:10:13.999Z"
+      },
+      "_id": {
+        "$oid": "6ae1bbf56587e3ff1162c09e"
+      }
+    },
+    {
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "title": "Food Collection Confirmed",
+      "message": "Collection for 'Automated Test Dal Makhani 1793178611' (8.0 kg) has been confirmed.",
+      "link": "/requests/my-requests",
+      "type": "success",
+      "is_read": false,
+      "created_at": {
+        "$date": "2026-10-28T09:10:14.988Z"
+      },
+      "_id": {
+        "$oid": "6ae1bbf66587e3ff1162c0a0"
+      }
+    },
+    {
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "title": "New Request Pending Review",
+      "message": "Priya Sharma requested 3.0 kg of Vegetable Fried Rice & Manchurian.",
+      "link": "/donor/requests",
+      "type": "info",
+      "is_read": false,
+      "created_at": {
+        "$date": "2026-10-28T08:33:51.238Z"
+      },
+      "_id": {
+        "$oid": "6ae1bdffb044ea0a7ae41a29"
+      }
+    },
+    {
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "title": "Request Approved!",
+      "message": "Your request for 10.0 kg of 'Veg Dum Biryani & Raita' has been approved! Pickup window: 02:00 PM - 06:00 PM.",
+      "link": "/ngo/requests",
+      "type": "success",
+      "is_read": false,
+      "created_at": {
+        "$date": "2026-10-28T08:18:51.238Z"
+      },
+      "_id": {
+        "$oid": "6ae1bdffb044ea0a7ae41a2a"
+      }
+    },
+    {
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "title": "Food Collection Confirmed",
+      "message": "Collection for 'Automated Test Dal Makhani' (8.0 kg) has been confirmed.",
+      "link": "/requests/my-requests",
+      "type": "success",
+      "is_read": false,
+      "created_at": {
+        "$date": "2026-10-28T10:10:12.561Z"
+      },
+      "_id": {
+        "$oid": "6ae1ca047b5b1a10bea6c7ce"
+      }
+    }
+  ],
+  "categories": [
+    {
+      "name": "Prepared Meals",
+      "icon": "bi-cup-hot",
+      "created_at": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "_id": {
+        "$oid": "6ae1b49b59fc4bcd024f5d0d"
+      }
+    },
+    {
+      "name": "Fresh Produce",
+      "icon": "bi-basket",
+      "created_at": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "_id": {
+        "$oid": "6ae1b49b59fc4bcd024f5d0e"
+      }
+    },
+    {
+      "name": "Bakery & Bread",
+      "icon": "bi-cookie",
+      "created_at": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "_id": {
+        "$oid": "6ae1b49b59fc4bcd024f5d0f"
+      }
+    },
+    {
+      "name": "Dairy Products",
+      "icon": "bi-egg",
+      "created_at": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "_id": {
+        "$oid": "6ae1b49b59fc4bcd024f5d10"
+      }
+    },
+    {
+      "name": "Packaged Foods",
+      "icon": "bi-box-seam",
+      "created_at": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "_id": {
+        "$oid": "6ae1b49b59fc4bcd024f5d11"
+      }
+    },
+    {
+      "name": "Beverages",
+      "icon": "bi-cup-straw",
+      "created_at": {
+        "$date": "2026-10-28T08:38:51.535Z"
+      },
+      "_id": {
+        "$oid": "6ae1b49b59fc4bcd024f5d12"
+      }
+    }
+  ],
+  "platform_settings": [
+    {
+      "type": "global",
+      "_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d20"
+      },
+      "platform_name": "FoodShare",
+      "tagline": "Good Food. Brighter Tomorrows.",
+      "support_email": "support@foodshare.com",
+      "disclaimer": "FoodShare is a technological redistribution facilitator. Donors are legally responsible for food hygiene, freshness, and allergen accuracy under local safety regulations.",
+      "individual_max_units": 10,
+      "updated_at": {
+        "$date": "2026-10-28T09:18:51.238Z"
+      }
+    }
+  ],
+  "audit_logs": [
+    {
+      "action": "CREATE_DONATION",
+      "entity_type": "donation",
+      "entity_id": {
+        "$oid": "6ae1b96e5315a134d09fdd1c"
+      },
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "details": "Created donation 'Automated Test Dal Makhani' of 20.0 kg",
+      "created_at": {
+        "$date": "2026-10-28T08:59:26.496Z"
+      },
+      "_id": {
+        "$oid": "6ae1b96e5315a134d09fdd1d"
+      }
+    },
+    {
+      "action": "SUBMIT_REQUEST",
+      "entity_type": "donation_request",
+      "entity_id": {
+        "$oid": "6ae1b99a44d1ca5ffefc1c77"
+      },
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "details": "Requested 5.0 kg for donation 'Vegetable Fried Rice & Manchurian'",
+      "created_at": {
+        "$date": "2026-10-28T09:00:10.799Z"
+      },
+      "_id": {
+        "$oid": "6ae1b99a44d1ca5ffefc1c79"
+      }
+    },
+    {
+      "action": "CREATE_DONATION",
+      "entity_type": "donation",
+      "entity_id": {
+        "$oid": "6ae1b9ccd298aef904b0deaa"
+      },
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "details": "Created donation 'Automated Test Dal Makhani' of 20.0 kg",
+      "created_at": {
+        "$date": "2026-10-28T09:01:00.175Z"
+      },
+      "_id": {
+        "$oid": "6ae1b9ccd298aef904b0deab"
+      }
+    },
+    {
+      "action": "SUBMIT_REQUEST",
+      "entity_type": "donation_request",
+      "entity_id": {
+        "$oid": "6ae1b9cdd298aef904b0deac"
+      },
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "details": "Requested 8.0 kg for donation 'Automated Test Dal Makhani'",
+      "created_at": {
+        "$date": "2026-10-28T09:01:01.397Z"
+      },
+      "_id": {
+        "$oid": "6ae1b9cdd298aef904b0deae"
+      }
+    },
+    {
+      "action": "APPROVE_REQUEST",
+      "entity_type": "donation_request",
+      "entity_id": {
+        "$oid": "6ae1b9cdd298aef904b0deac"
+      },
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "details": "Approved 8.0 units. Remaining: 12.0",
+      "created_at": {
+        "$date": "2026-10-28T09:01:02.627Z"
+      },
+      "_id": {
+        "$oid": "6ae1b9ced298aef904b0deb0"
+      }
+    },
+    {
+      "action": "CREATE_DONATION",
+      "entity_type": "donation",
+      "entity_id": {
+        "$oid": "6ae1ba159f936d40e52073ce"
+      },
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "details": "Created donation 'Automated Test Dal Makhani' of 20.0 kg",
+      "created_at": {
+        "$date": "2026-10-28T09:02:13.459Z"
+      },
+      "_id": {
+        "$oid": "6ae1ba159f936d40e52073cf"
+      }
+    },
+    {
+      "action": "CREATE_DONATION",
+      "entity_type": "donation",
+      "entity_id": {
+        "$oid": "6ae1ba5e9509c6d76af16b04"
+      },
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "details": "Created donation 'Automated Test Dal Makhani 1793178205' of 20.0 kg",
+      "created_at": {
+        "$date": "2026-10-28T09:03:26.317Z"
+      },
+      "_id": {
+        "$oid": "6ae1ba5e9509c6d76af16b05"
+      }
+    },
+    {
+      "action": "SUBMIT_REQUEST",
+      "entity_type": "donation_request",
+      "entity_id": {
+        "$oid": "6ae1ba5f9509c6d76af16b06"
+      },
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "details": "Requested 8.0 kg for donation 'Automated Test Dal Makhani 1793178205'",
+      "created_at": {
+        "$date": "2026-10-28T09:03:27.537Z"
+      },
+      "_id": {
+        "$oid": "6ae1ba5f9509c6d76af16b08"
+      }
+    },
+    {
+      "action": "APPROVE_REQUEST",
+      "entity_type": "donation_request",
+      "entity_id": {
+        "$oid": "6ae1ba5f9509c6d76af16b06"
+      },
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "details": "Approved 8.0 units. Remaining: 12.0",
+      "created_at": {
+        "$date": "2026-10-28T09:03:28.787Z"
+      },
+      "_id": {
+        "$oid": "6ae1ba609509c6d76af16b0a"
+      }
+    },
+    {
+      "action": "CREATE_DONATION",
+      "entity_type": "donation",
+      "entity_id": {
+        "$oid": "6ae1bb8055e8be53550958b7"
+      },
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "details": "Created donation 'Automated Test Dal Makhani 1793178495' of 20.0 kg",
+      "created_at": {
+        "$date": "2026-10-28T09:08:16.050Z"
+      },
+      "_id": {
+        "$oid": "6ae1bb8055e8be53550958b8"
+      }
+    },
+    {
+      "action": "SUBMIT_REQUEST",
+      "entity_type": "donation_request",
+      "entity_id": {
+        "$oid": "6ae1bb8155e8be53550958b9"
+      },
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "details": "Requested 8.0 kg for donation 'Automated Test Dal Makhani 1793178495'",
+      "created_at": {
+        "$date": "2026-10-28T09:08:17.039Z"
+      },
+      "_id": {
+        "$oid": "6ae1bb8155e8be53550958bb"
+      }
+    },
+    {
+      "action": "APPROVE_REQUEST",
+      "entity_type": "donation_request",
+      "entity_id": {
+        "$oid": "6ae1bb8155e8be53550958b9"
+      },
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "details": "Approved 8.0 units. Remaining: 12.0",
+      "created_at": {
+        "$date": "2026-10-28T09:08:18.030Z"
+      },
+      "_id": {
+        "$oid": "6ae1bb8255e8be53550958bd"
+      }
+    },
+    {
+      "action": "CREATE_DONATION",
+      "entity_type": "donation",
+      "entity_id": {
+        "$oid": "6ae1bbf46587e3ff1162c099"
+      },
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "details": "Created donation 'Automated Test Dal Makhani 1793178611' of 20.0 kg",
+      "created_at": {
+        "$date": "2026-10-28T09:10:12.024Z"
+      },
+      "_id": {
+        "$oid": "6ae1bbf46587e3ff1162c09a"
+      }
+    },
+    {
+      "action": "SUBMIT_REQUEST",
+      "entity_type": "donation_request",
+      "entity_id": {
+        "$oid": "6ae1bbf46587e3ff1162c09b"
+      },
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d14"
+      },
+      "details": "Requested 8.0 kg for donation 'Automated Test Dal Makhani 1793178611'",
+      "created_at": {
+        "$date": "2026-10-28T09:10:12.991Z"
+      },
+      "_id": {
+        "$oid": "6ae1bbf56587e3ff1162c09d"
+      }
+    },
+    {
+      "action": "APPROVE_REQUEST",
+      "entity_type": "donation_request",
+      "entity_id": {
+        "$oid": "6ae1bbf46587e3ff1162c09b"
+      },
+      "user_id": {
+        "$oid": "6ae1b49f59fc4bcd024f5d13"
+      },
+      "details": "Approved 8.0 units. Remaining: 12.0",
+      "created_at": {
+        "$date": "2026-10-28T09:10:13.984Z"
+      },
+      "_id": {
+        "$oid": "6ae1bbf66587e3ff1162c09f"
+      }
+    }
+  ]
+}

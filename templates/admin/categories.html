@@ -1,0 +1,99 @@
+{% extends 'base.html' %}
+
+{% block title %}Food Categories — Admin Console{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-heading">Admin Operations</div>
+    <a href="{{ url_for('admin.dashboard') }}" class="sidebar-nav-item">
+      <i class="bi bi-speedometer2"></i> Dashboard
+    </a>
+    <a href="{{ url_for('admin.users') }}" class="sidebar-nav-item">
+      <i class="bi bi-people"></i> Manage Users
+    </a>
+    <a href="{{ url_for('admin.donations') }}" class="sidebar-nav-item">
+      <i class="bi bi-box-seam"></i> Food Listings
+    </a>
+    <a href="{{ url_for('admin.requests') }}" class="sidebar-nav-item">
+      <i class="bi bi-inbox"></i> Redistribution Requests
+    </a>
+    <a href="{{ url_for('admin.categories') }}" class="sidebar-nav-item active">
+      <i class="bi bi-tags"></i> Food Categories
+    </a>
+    <a href="{{ url_for('admin.audit_logs') }}" class="sidebar-nav-item">
+      <i class="bi bi-journal-text"></i> Audit Logs
+    </a>
+    <a href="{{ url_for('admin.settings') }}" class="sidebar-nav-item">
+      <i class="bi bi-sliders"></i> Platform Settings
+    </a>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+      <h2 class="fw-bold text-white mb-1">Food Category Taxonomy</h2>
+      <p class="text-secondary small mb-0">Manage permitted food classifications and category icons.</p>
+    </div>
+
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="fs-card p-4">
+          <h5 class="fw-bold text-white mb-3">Add New Category</h5>
+          <form method="POST" action="{{ url_for('admin.categories') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type="hidden" name="action" value="add">
+            
+            <div class="mb-3">
+              <label class="form-label">Category Name</label>
+              <input type="text" class="form-control" name="name" placeholder="e.g. Frozen Foods" required>
+            </div>
+
+            <div class="mb-4">
+              <label class="form-label">Bootstrap Icon Name</label>
+              <input type="text" class="form-control" name="icon" value="bi-box-seam" placeholder="e.g. bi-egg">
+            </div>
+
+            <button type="submit" class="btn btn-share-green w-100">
+              <i class="bi bi-plus-lg me-1"></i> Add Category
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="col-lg-7">
+        <div class="fs-card p-4">
+          <h5 class="fw-bold text-white mb-3">Configured Food Categories</h5>
+          <div class="table-responsive">
+            <table class="table-fs">
+              <thead>
+                <tr>
+                  <th>Icon</th>
+                  <th>Category Name</th>
+                  <th class="text-end">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for cat in categories %}
+                  <tr>
+                    <td><i class="bi {{ cat.icon or 'bi-box' }} fs-5 text-success"></i></td>
+                    <td class="fw-bold text-white">{{ cat.name }}</td>
+                    <td class="text-end">
+                      <form method="POST" action="{{ url_for('admin.categories') }}" onsubmit="return confirm('Remove category?');" class="d-inline">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <input type="hidden" name="action" value="delete">
+                        <input type="hidden" name="category_id" value="{{ cat._id }}">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Remove</button>
+                      </form>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

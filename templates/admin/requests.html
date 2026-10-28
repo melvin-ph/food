@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}All Redistribution Requests — Admin Console{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-heading">Admin Operations</div>
+    <a href="{{ url_for('admin.dashboard') }}" class="sidebar-nav-item">
+      <i class="bi bi-speedometer2"></i> Dashboard
+    </a>
+    <a href="{{ url_for('admin.users') }}" class="sidebar-nav-item">
+      <i class="bi bi-people"></i> Manage Users
+    </a>
+    <a href="{{ url_for('admin.donations') }}" class="sidebar-nav-item">
+      <i class="bi bi-box-seam"></i> Food Listings
+    </a>
+    <a href="{{ url_for('admin.requests') }}" class="sidebar-nav-item active">
+      <i class="bi bi-inbox"></i> Redistribution Requests
+    </a>
+    <a href="{{ url_for('admin.reported_listings') }}" class="sidebar-nav-item">
+      <i class="bi bi-flag"></i> Reported Listings
+    </a>
+    <a href="{{ url_for('admin.categories') }}" class="sidebar-nav-item">
+      <i class="bi bi-tags"></i> Food Categories
+    </a>
+    <a href="{{ url_for('admin.audit_logs') }}" class="sidebar-nav-item">
+      <i class="bi bi-journal-text"></i> Audit Logs
+    </a>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+      <div>
+        <h2 class="fw-bold text-white mb-1">Global Redistribution Requests</h2>
+        <p class="text-secondary small mb-0">Complete record of recipient and NGO food allocation requests.</p>
+      </div>
+
+      <div class="btn-group btn-group-sm">
+        <a href="{{ url_for('admin.requests') }}" class="btn {% if not active_status %}btn-share-green{% else %}btn-share-outline{% endif %}">All</a>
+        <a href="{{ url_for('admin.requests', status='Pending') }}" class="btn {% if active_status == 'Pending' %}btn-share-green{% else %}btn-share-outline{% endif %}">Pending</a>
+        <a href="{{ url_for('admin.requests', status='Approved') }}" class="btn {% if active_status == 'Approved' %}btn-share-green{% else %}btn-share-outline{% endif %}">Approved</a>
+        <a href="{{ url_for('admin.requests', status='Collected') }}" class="btn {% if active_status == 'Collected' %}btn-share-green{% else %}btn-share-outline{% endif %}">Collected</a>
+      </div>
+    </div>
+
+    <div class="fs-card p-4">
+      <div class="table-responsive">
+        <table class="table-fs">
+          <thead>
+            <tr>
+              <th>Request ID</th>
+              <th>Food Item</th>
+              <th>Donor Provider</th>
+              <th>Recipient</th>
+              <th>Role</th>
+              <th>Quantity</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if requests %}
+              {% for req in requests %}
+                <tr>
+                  <td><code>#{{ str(req._id)[-6:] }}</code></td>
+                  <td class="fw-bold text-white">{{ req.donation_title }}</td>
+                  <td>{{ req.donor_name }}</td>
+                  <td>{{ req.recipient_name }}</td>
+                  <td><span class="badge bg-secondary text-uppercase">{{ req.recipient_role }}</span></td>
+                  <td class="fw-bold text-warning">{{ req.requested_quantity }} {{ req.unit }}</td>
+                  <td><span class="{{ req.status | status_badge }}">{{ req.status }}</span></td>
+                  <td class="small text-secondary">{{ req.created_at | format_date }}</td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr><td colspan="8" class="text-center py-4 text-secondary">No requests found.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

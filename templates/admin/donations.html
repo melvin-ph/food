@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}All Food Listings — Admin Console{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-heading">Admin Operations</div>
+    <a href="{{ url_for('admin.dashboard') }}" class="sidebar-nav-item">
+      <i class="bi bi-speedometer2"></i> Dashboard
+    </a>
+    <a href="{{ url_for('admin.users') }}" class="sidebar-nav-item">
+      <i class="bi bi-people"></i> Manage Users
+    </a>
+    <a href="{{ url_for('admin.donations') }}" class="sidebar-nav-item active">
+      <i class="bi bi-box-seam"></i> Food Listings
+    </a>
+    <a href="{{ url_for('admin.requests') }}" class="sidebar-nav-item">
+      <i class="bi bi-inbox"></i> Redistribution Requests
+    </a>
+    <a href="{{ url_for('admin.reported_listings') }}" class="sidebar-nav-item">
+      <i class="bi bi-flag"></i> Reported Listings
+    </a>
+    <a href="{{ url_for('admin.categories') }}" class="sidebar-nav-item">
+      <i class="bi bi-tags"></i> Food Categories
+    </a>
+    <a href="{{ url_for('admin.audit_logs') }}" class="sidebar-nav-item">
+      <i class="bi bi-journal-text"></i> Audit Logs
+    </a>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+      <div>
+        <h2 class="fw-bold text-white mb-1">Platform Food Listings</h2>
+        <p class="text-secondary small mb-0">Monitor all surplus food postings across all active donors.</p>
+      </div>
+
+      <div class="btn-group btn-group-sm">
+        <a href="{{ url_for('admin.donations') }}" class="btn {% if not active_status %}btn-share-green{% else %}btn-share-outline{% endif %}">All</a>
+        <a href="{{ url_for('admin.donations', status='Available') }}" class="btn {% if active_status == 'Available' %}btn-share-green{% else %}btn-share-outline{% endif %}">Available</a>
+        <a href="{{ url_for('admin.donations', status='Collected') }}" class="btn {% if active_status == 'Collected' %}btn-share-green{% else %}btn-share-outline{% endif %}">Collected</a>
+        <a href="{{ url_for('admin.donations', status='Cancelled') }}" class="btn {% if active_status == 'Cancelled' %}btn-share-green{% else %}btn-share-outline{% endif %}">Cancelled</a>
+      </div>
+    </div>
+
+    <div class="fs-card p-4">
+      <div class="table-responsive">
+        <table class="table-fs">
+          <thead>
+            <tr>
+              <th>Food Item</th>
+              <th>Donor</th>
+              <th>Total Qty</th>
+              <th>Remaining</th>
+              <th>Deadline</th>
+              <th>Status</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if donations %}
+              {% for d in donations %}
+                <tr>
+                  <td>
+                    <div class="d-flex align-items-center gap-2">
+                      <img src="{{ d.image_path or url_for('static', filename='images/prepared-meals.jpg') }}" class="rounded" style="width: 36px; height: 36px; object-fit: cover;">
+                      <a href="{{ url_for('donations.detail', donation_id=d._id) }}" class="fw-bold text-white text-decoration-none">
+                        {{ d.title }}
+                      </a>
+                    </div>
+                  </td>
+                  <td>{{ d.donor_name }}</td>
+                  <td>{{ d.quantity }} {{ d.unit }}</td>
+                  <td><span class="fw-bold text-success">{{ d.remaining_quantity }} {{ d.unit }}</span></td>
+                  <td>{{ d.available_until | format_datetime }}</td>
+                  <td><span class="{{ d.status | status_badge }}">{{ d.status }}</span></td>
+                  <td class="text-end">
+                    <div class="d-inline-flex gap-1">
+                      <a href="{{ url_for('donations.detail', donation_id=d._id) }}" class="btn btn-sm btn-share-outline">View</a>
+                      {% if d.status not in ['Collected', 'Completed', 'Cancelled'] %}
+                        <form method="POST" action="{{ url_for('admin.cancel_donation_admin', donation_id=d._id) }}" onsubmit="return confirm('Cancel this listing due to policy or safety review?');" class="d-inline">
+                          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                          <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
+                        </form>
+                      {% endif %}
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr><td colspan="7" class="text-center py-4 text-secondary">No donations found.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

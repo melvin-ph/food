@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+{% block title %}System Audit Logs — Admin Console{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-heading">Admin Operations</div>
+    <a href="{{ url_for('admin.dashboard') }}" class="sidebar-nav-item">
+      <i class="bi bi-speedometer2"></i> Dashboard
+    </a>
+    <a href="{{ url_for('admin.users') }}" class="sidebar-nav-item">
+      <i class="bi bi-people"></i> Manage Users
+    </a>
+    <a href="{{ url_for('admin.donations') }}" class="sidebar-nav-item">
+      <i class="bi bi-box-seam"></i> Food Listings
+    </a>
+    <a href="{{ url_for('admin.requests') }}" class="sidebar-nav-item">
+      <i class="bi bi-inbox"></i> Redistribution Requests
+    </a>
+    <a href="{{ url_for('admin.categories') }}" class="sidebar-nav-item">
+      <i class="bi bi-tags"></i> Food Categories
+    </a>
+    <a href="{{ url_for('admin.audit_logs') }}" class="sidebar-nav-item active">
+      <i class="bi bi-journal-text"></i> Audit Logs
+    </a>
+    <a href="{{ url_for('admin.settings') }}" class="sidebar-nav-item">
+      <i class="bi bi-sliders"></i> Platform Settings
+    </a>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+      <h2 class="fw-bold text-white mb-1">System Audit & Compliance Log</h2>
+      <p class="text-secondary small mb-0">Immutable records of critical user authorizations, approvals, cancellations, and status modifications.</p>
+    </div>
+
+    <div class="fs-card p-4">
+      <div class="table-responsive">
+        <table class="table-fs">
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Action Code</th>
+              <th>Entity</th>
+              <th>Entity ID</th>
+              <th>Details & Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if logs %}
+              {% for log in logs %}
+                <tr>
+                  <td class="small text-secondary">{{ log.created_at | format_datetime }}</td>
+                  <td>
+                    <span class="badge bg-dark border border-secondary text-white font-monospace">
+                      {{ log.action }}
+                    </span>
+                  </td>
+                  <td><span class="small text-uppercase text-secondary">{{ log.entity_type }}</span></td>
+                  <td><code class="small text-info">#{{ str(log.entity_id)[-8:] if log.entity_id else 'N/A' }}</code></td>
+                  <td class="small text-white">{{ log.details }}</td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr><td colspan="5" class="text-center py-4 text-secondary">No audit logs found.</td></tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Reported Listings — Admin Console{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-heading">Admin Operations</div>
+    <a href="{{ url_for('admin.dashboard') }}" class="sidebar-nav-item">
+      <i class="bi bi-speedometer2"></i> Dashboard
+    </a>
+    <a href="{{ url_for('admin.users') }}" class="sidebar-nav-item">
+      <i class="bi bi-people"></i> Manage Users
+    </a>
+    <a href="{{ url_for('admin.donations') }}" class="sidebar-nav-item">
+      <i class="bi bi-box-seam"></i> Food Listings
+    </a>
+    <a href="{{ url_for('admin.reported_listings') }}" class="sidebar-nav-item active">
+      <i class="bi bi-flag"></i> Reported Listings
+    </a>
+    <a href="{{ url_for('admin.categories') }}" class="sidebar-nav-item">
+      <i class="bi bi-tags"></i> Food Categories
+    </a>
+    <a href="{{ url_for('admin.audit_logs') }}" class="sidebar-nav-item">
+      <i class="bi bi-journal-text"></i> Audit Logs
+    </a>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+      <h2 class="fw-bold text-white mb-1">Reported Food Listings & Safety Incidents</h2>
+      <p class="text-secondary small mb-0">Investigate user reports regarding food quality, hygiene violations, or inaccurate descriptions.</p>
+    </div>
+
+    <div class="fs-card p-4">
+      <div class="table-responsive">
+        <table class="table-fs">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Food Item</th>
+              <th>Reason</th>
+              <th>Details Provided</th>
+              <th>Status</th>
+              <th class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if reports %}
+              {% for rep in reports %}
+                <tr>
+                  <td class="small text-secondary">{{ rep.created_at | format_datetime }}</td>
+                  <td class="fw-bold text-white">
+                    <a href="{{ url_for('donations.detail', donation_id=rep.donation_id) }}" class="text-white text-decoration-none">
+                      {{ rep.donation_title }}
+                    </a>
+                  </td>
+                  <td><span class="badge bg-danger-subtle text-danger">{{ rep.reason }}</span></td>
+                  <td class="small text-secondary">{{ rep.details or 'No additional comment' }}</td>
+                  <td><span class="badge bg-warning-subtle text-warning">{{ rep.status }}</span></td>
+                  <td class="text-end">
+                    <div class="d-inline-flex gap-1">
+                      <a href="{{ url_for('donations.detail', donation_id=rep.donation_id) }}" class="btn btn-sm btn-share-outline">Inspect</a>
+                      <form method="POST" action="{{ url_for('admin.cancel_donation_admin', donation_id=rep.donation_id) }}" onsubmit="return confirm('Take down this reported listing?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                        <button type="submit" class="btn btn-sm btn-danger">Take Down</button>
+                      </form>
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="6" class="text-center py-5 text-secondary">
+                  <i class="bi bi-shield-check fs-1 text-success d-block mb-2"></i>
+                  No safety reports filed. All platform listings are operating within quality standards.
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}

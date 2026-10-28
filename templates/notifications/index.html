@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Notifications — FoodShare{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 800px;">
+
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom"
+    style="border-color: var(--border-color) !important;">
+    <div>
+      <h2 class="fw-bold text-white mb-1"><i class="bi bi-bell text-warning me-2"></i>Notifications Center</h2>
+      <p class="text-secondary small mb-0">Real-time alerts for incoming requests, status approvals, and pickup
+        confirmations.</p>
+    </div>
+
+    {% if notifications %}
+    <form method="POST" action="{{ url_for('notifications.mark_all_read') }}">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+      <button type="submit" class="btn btn-sm btn-share-outline">
+        <i class="bi bi-check2-all me-1"></i> Mark All as Read
+      </button>
+    </form>
+    {% endif %}
+  </div>
+
+  {% if notifications %}
+  <div class="d-flex flex-column gap-3">
+    {% for notif in notifications %}
+    <div class="fs-card p-3 d-flex align-items-start gap-3 {% if not notif.is_read %}border-success{% endif %}"
+      style="{% if not notif.is_read %}background: #142016;{% endif %}">
+      <div class="stat-icon flex-shrink-0" style="width: 40px; height: 40px; font-size: 1.1rem;
+            {% if notif.type == 'success' %}color: var(--green-primary); background: rgba(57,211,83,0.15);
+            {% elif notif.type == 'warning' %}color: var(--state-warning); background: rgba(245,185,66,0.15);
+            {% elif notif.type == 'danger' %}color: var(--state-error); background: rgba(239,68,68,0.15);
+            {% else %}color: var(--state-info); background: rgba(56,189,248,0.15);{% endif %}">
+        {% if notif.type == 'success' %}<i class="bi bi-check-circle-fill"></i>
+        {% elif notif.type == 'warning' %}<i class="bi bi-exclamation-triangle-fill"></i>
+        {% elif notif.type == 'danger' %}<i class="bi bi-x-circle-fill"></i>
+        {% else %}<i class="bi bi-info-circle-fill"></i>{% endif %}
+      </div>
+
+      <div class="flex-grow-1">
+        <div class="d-flex justify-content-between align-items-center mb-1">
+          <h6 class="fw-bold text-white mb-0">{{ notif.title }}</h6>
+          <span class="small text-secondary" style="font-size: 0.75rem;">{{ notif.created_at | format_datetime }}</span>
+        </div>
+        <p class="text-secondary small mb-2">{{ notif.message }}</p>
+
+        <div class="d-flex align-items-center gap-3">
+          {% if notif.link and notif.link != '#' %}
+          <a href="{{ notif.link }}" class="small fw-semibold" style="color: var(--green-primary);">
+            View Details <i class="bi bi-arrow-right"></i>
+          </a>
+          {% endif %}
+
+          {% if not notif.is_read %}
+          <form method="POST" action="{{ url_for('notifications.mark_read', notification_id=notif._id) }}"
+            class="ms-auto">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <button type="submit" class="btn btn-sm btn-link text-secondary text-decoration-none p-0"
+              style="font-size: 0.75rem;">
+              Mark as read
+            </button>
+          </form>
+          {% else %}
+          <span class="small text-secondary ms-auto" style="font-size: 0.72rem;">Read</span>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="fs-card text-center py-5">
+    <i class="bi bi-bell-slash fs-1 text-secondary mb-3 d-block"></i>
+    <h5 class="text-white">No Notifications</h5>
+    <p class="text-secondary small mb-0">You're all caught up! Updates regarding donations and requests will appear
+      here.</p>
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

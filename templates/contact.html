@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Support — FoodShare{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      
+      <div class="text-center mb-5">
+        <span class="badge px-3 py-1 mb-2" style="background: rgba(57, 211, 83, 0.15); color: var(--green-primary); border: 1px solid rgba(57, 211, 83, 0.3);">
+          We're Here to Help
+        </span>
+        <h1 class="display-5 fw-bold text-white">Contact FoodShare Support</h1>
+        <p class="text-secondary mx-auto">
+          Reach our platform coordination team for NGO onboarding, corporate donor partnerships, or technical inquiries.
+        </p>
+      </div>
+
+      <div class="row g-4">
+        <!-- Contact Form -->
+        <div class="col-md-7">
+          <div class="fs-card p-4 p-md-5">
+            <h5 class="fw-bold text-white mb-3"><i class="bi bi-chat-square-dots text-success me-2"></i>Send an Inquiry</h5>
+            
+            <form method="POST" action="{{ url_for('public.contact') }}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+              <div class="mb-3">
+                <label class="form-label">Your Name *</label>
+                <input type="text" class="form-control" name="name" placeholder="Full name" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Your Email *</label>
+                <input type="email" class="form-control" name="email" placeholder="name@domain.com" required>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label">Subject</label>
+                <input type="text" class="form-control" name="subject" placeholder="e.g. Partnership / NGO Verification inquiry">
+              </div>
+
+              <div class="mb-4">
+                <label class="form-label">Message *</label>
+                <textarea class="form-control" name="message" rows="4" placeholder="How can our redistribution coordination team assist you?" required></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-share-green w-100">
+                <i class="bi bi-send me-1"></i> Send Message
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Contact Cards -->
+        <div class="col-md-5">
+          <div class="d-flex flex-column gap-3">
+            <div class="fs-card p-4">
+              <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="stat-icon text-success" style="width: 40px; height: 40px; font-size: 1.1rem;"><i class="bi bi-envelope-fill"></i></div>
+                <div>
+                  <h6 class="fw-bold text-white mb-0">Email Support</h6>
+                  <span class="small text-secondary">support@foodshare.com</span>
+                </div>
+              </div>
+              <p class="small text-secondary mb-0">We typically reply within 2 to 4 business hours.</p>
+            </div>
+
+            <div class="fs-card p-4">
+              <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="stat-icon text-warning" style="width: 40px; height: 40px; font-size: 1.1rem;"><i class="bi bi-telephone-fill"></i></div>
+                <div>
+                  <h6 class="fw-bold text-white mb-0">Helpline</h6>
+                  <span class="small text-secondary">+91 1800 200 4567</span>
+                </div>
+              </div>
+              <p class="small text-secondary mb-0">Monday to Saturday: 8:00 AM – 9:00 PM IST.</p>
+            </div>
+
+            <div class="fs-card p-4">
+              <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="stat-icon text-info" style="width: 40px; height: 40px; font-size: 1.1rem;"><i class="bi bi-geo-alt-fill"></i></div>
+                <div>
+                  <h6 class="fw-bold text-white mb-0">Redistribution Operations HQ</h6>
+                  <span class="small text-secondary">Heritage Metro Tower, 4th Floor, Tech Park Area</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

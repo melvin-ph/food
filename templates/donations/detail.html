@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ donation.title }} — FoodShare{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  
+  <div class="mb-3">
+    <a href="javascript:history.back()" class="btn btn-sm btn-share-outline">
+      <i class="bi bi-arrow-left me-1"></i> Back
+    </a>
+  </div>
+
+  <div class="row g-4">
+    <!-- Left Column: Image & Donor Profile -->
+    <div class="col-lg-5">
+      <div class="fs-card p-0 overflow-hidden mb-4">
+        <img src="{{ donation.image_path or url_for('static', filename='images/prepared-meals.jpg') }}" alt="{{ donation.title }}" class="img-fluid w-100" style="max-height: 380px; object-fit: cover;">
+        <div class="p-3 d-flex justify-content-between align-items-center">
+          <span class="food-type-badge {% if donation.food_classification == 'Vegetarian' %}food-type-veg{% else %}food-type-nonveg{% endif %}">
+            <i class="bi bi-circle-fill" style="font-size: 8px;"></i> {{ donation.food_classification }}
+          </span>
+          <span class="{{ donation.status | status_badge }}">{{ donation.status }}</span>
+        </div>
+      </div>
+
+      <!-- Donor Info Box -->
+      <div class="fs-card p-4">
+        <h5 class="fw-bold text-white mb-3"><i class="bi bi-building text-success me-2"></i>Donor Information</h5>
+        <div class="mb-2">
+          <span class="text-secondary small">Organization:</span>
+          <div class="fw-bold text-white">{{ donation.donor_name }}</div>
+        </div>
+        {% if donation.donor %}
+          <div class="mb-2">
+            <span class="text-secondary small">Donor Category:</span>
+            <div class="text-white small">{{ donation.donor.donor_type }}</div>
+          </div>
+          {% if user and user.role in ['ngo', 'recipient', 'donor', 'admin'] %}
+            <div class="mb-2">
+              <span class="text-secondary small">Contact Phone:</span>
+              <div class="text-white small">{{ donation.donor.phone }}</div>
+            </div>
+          {% endif %}
+        {% endif %}
+        <div>
+          <span class="text-secondary small">Pickup Location:</span>
+          <div class="text-white small"><i class="bi bi-geo-alt text-warning me-1"></i>{{ donation.pickup_address }}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Food Details, Safety & Request Action -->
+    <div class="col-lg-7">
+      <div class="fs-card p-4 p-md-5">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <div>
+            <span class="badge bg-dark border border-secondary text-secondary mb-2">{{ donation.category }}</span>
+            <h2 class="fw-bold text-white mb-1">{{ donation.title }}</h2>
+          </div>
+          <div class="text-end">
+            <div class="fs-3 fw-bold text-success">{{ donation.remaining_quantity }} {{ donation.unit }}</div>
+            <div class="small text-secondary">of {{ donation.quantity }} {{ donation.unit }} total</div>
+          </div>
+        </div>
+
+        <p class="text-secondary mb-4">{{ donation.description }}</p>
+
+        <!-- Logistics & Food Safety Grid -->
+        <div class="row g-3 mb-4">
+          <div class="col-sm-6">
+            <div class="p-3 rounded" style="background: var(--bg-elevated); border: 1px solid var(--border-color);">
+              <div class="text-secondary small mb-1"><i class="bi bi-clock-history text-info me-1"></i> Pickup Window</div>
+              <div class="fw-semibold text-white">{{ donation.pickup_start }} - {{ donation.pickup_end }}</div>
+              <div class="small text-secondary mt-1">Expiry: {{ donation.available_until | format_datetime }}</div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="p-3 rounded" style="background: var(--bg-elevated); border: 1px solid var(--border-color);">
+              <div class="text-secondary small mb-1"><i class="bi bi-exclamation-triangle text-warning me-1"></i> Allergen Information</div>
+              <div class="fw-semibold text-white">{{ donation.allergens or 'None specified' }}</div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="p-3 rounded" style="background: var(--bg-elevated); border: 1px solid var(--border-color);">
+              <div class="text-secondary small mb-1"><i class="bi bi-thermometer-half text-danger me-1"></i> Storage Guidance</div>
+              <div class="fw-semibold text-white">{{ donation.storage_instructions or 'Safe temperature maintenance' }}</div>
+            </div>
+          </div>
+          <div class="col-sm-6">
+            <div class="p-3 rounded" style="background: var(--bg-elevated); border: 1px solid var(--border-color);">
+              <div class="text-secondary small mb-1"><i class="bi bi-box-seam text-success me-1"></i> Packaging</div>
+              <div class="fw-semibold text-white">{{ donation.packaging_details or 'Food grade containers' }}</div>
+            </div>
+          </div>
+        </div>
+
+        {% if donation.contact_instructions %}
+          <div class="p-3 rounded mb-4" style="background: rgba(56, 189, 248, 0.08); border: 1px solid rgba(56, 189, 248, 0.25);">
+            <div class="small fw-bold text-info mb-1"><i class="bi bi-info-circle me-1"></i> Entry & Collection Instructions</div>
+            <div class="small text-white">{{ donation.contact_instructions }}</div>
+          </div>
+        {% endif %}
+
+        <!-- Action Section -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 pt-3 border-top" style="border-color: var(--border-color) !important;">
+          <div>
+            {% if not user %}
+              <a href="{{ url_for('auth.login', next=request.path) }}" class="btn btn-share-orange btn-lg">
+                <i class="bi bi-box-arrow-in-right me-1"></i> Log in to Request Food
+              </a>
+            {% elif user.role in ['ngo', 'recipient'] %}
+              {% if user_request %}
+                <div class="p-2 px-3 rounded d-inline-flex align-items-center gap-2" style="background: var(--bg-elevated); border: 1px solid var(--border-color);">
+                  <span class="small text-secondary">Your Request Status:</span>
+                  <span class="{{ user_request.status | status_badge }}">{{ user_request.status }}</span>
+                  <a href="{{ url_for(user.role + '.my_requests' if user.role == 'recipient' else 'ngo.requests') }}" class="btn btn-sm btn-share-outline ms-2">View</a>
+                </div>
+              {% elif donation.status in ['Available', 'Partially Reserved'] and donation.remaining_quantity > 0 %}
+                <button type="button" class="btn btn-share-orange btn-lg" data-bs-toggle="modal" data-bs-target="#requestModal">
+                  <i class="bi bi-gift-fill me-1"></i> Request This Food
+                </button>
+              {% else %}
+                <button class="btn btn-secondary btn-lg" disabled>Food Fully Reserved</button>
+              {% endif %}
+            {% elif user.role == 'donor' and user._id == donation.donor_id %}
+              <div class="d-flex gap-2">
+                <a href="{{ url_for('donor.edit', donation_id=donation._id) }}" class="btn btn-share-green">
+                  <i class="bi bi-pencil me-1"></i> Edit Listing
+                </a>
+                <a href="{{ url_for('donor.requests') }}" class="btn btn-share-outline">
+                  <i class="bi bi-inbox me-1"></i> View Requests
+                </a>
+              </div>
+            {% endif %}
+          </div>
+
+          <!-- Report Listing Button -->
+          <button type="button" class="btn btn-sm btn-outline-danger" data-bs-toggle="modal" data-bs-target="#reportModal">
+            <i class="bi bi-flag me-1"></i> Report Listing
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Request Modal for logged-in NGO / Recipient -->
+{% if user and user.role in ['ngo', 'recipient'] %}
+<div class="modal fade" id="requestModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+      <div class="modal-header border-bottom border-secondary">
+        <h5 class="modal-title text-white">Request Food: {{ donation.title }}</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{{ url_for(user.role + '.submit') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <input type="hidden" name="donation_id" value="{{ donation._id }}">
+        
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Quantity Required (Max {{ donation.remaining_quantity }} {{ donation.unit }}) *</label>
+            <input type="number" step="0.5" min="0.5" max="{{ [donation.remaining_quantity, 10 if user.role == 'recipient' else donation.remaining_quantity] | min }}" class="form-control" name="requested_quantity" required>
+            {% if user.role == 'recipient' %}
+              <span class="small text-secondary">Individual request limit: max 10 units.</span>
+            {% endif %}
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Intended Collection Time within ({{ donation.pickup_start }} - {{ donation.pickup_end }}) *</label>
+            <input type="text" class="form-control" name="intended_pickup_time" placeholder="e.g. Today at 04:00 PM" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Distribution / Recipient Notes (Optional)</label>
+            <textarea class="form-control" name="notes" rows="2" placeholder="Explain your collection or distribution plan..."></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer border-top border-secondary">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-share-orange btn-sm">Confirm Request</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endif %}
+
+<!-- Report Listing Modal -->
+<div class="modal fade" id="reportModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content" style="background: var(--bg-card); border: 1px solid var(--border-color);">
+      <div class="modal-header border-bottom border-secondary">
+        <h5 class="modal-title text-white"><i class="bi bi-shield-exclamation text-danger me-2"></i>Report Listing</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <form method="POST" action="{{ url_for('donations.report', donation_id=donation._id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+        <div class="modal-body">
+          <p class="text-secondary small">Help keep FoodShare safe and reliable. Our administration will review this listing immediately.</p>
+          <div class="mb-3">
+            <label class="form-label">Reason for Reporting *</label>
+            <select class="form-select" name="reason" required>
+              <option value="Food safety or hygiene concern">Food safety or hygiene concern</option>
+              <option value="Inaccurate food description or allergens">Inaccurate food description or allergens</option>
+              <option value="Expired or spoiled food">Expired or spoiled food</option>
+              <option value="Unreachable donor or incorrect address">Unreachable donor or incorrect address</option>
+              <option value="Spam or inappropriate content">Spam or inappropriate content</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Additional Details</label>
+            <textarea class="form-control" name="details" rows="3" placeholder="Please provide any relevant details or observations..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer border-top border-secondary">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-danger btn-sm">Submit Report</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

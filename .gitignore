@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.env
+.env.*
+!.env.example
+.venv/
+env/
+venv/
+ENV/
+instance/
+.pytest_cache/
+.coverage
+htmlcov/
+static/images/uploads/*
+!static/images/uploads/.gitkeep

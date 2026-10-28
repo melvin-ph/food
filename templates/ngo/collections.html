@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Collection History — NGO Portal{% endblock %}
+
+{% block content %}
+<div class="dashboard-layout">
+  
+  <aside class="dashboard-sidebar">
+    <div class="sidebar-heading">NGO Portal</div>
+    <a href="{{ url_for('ngo.dashboard') }}" class="sidebar-nav-item">
+      <i class="bi bi-grid-fill"></i> Dashboard
+    </a>
+    <a href="{{ url_for('ngo.browse') }}" class="sidebar-nav-item">
+      <i class="bi bi-search"></i> Browse Donations
+    </a>
+    <a href="{{ url_for('ngo.requests') }}" class="sidebar-nav-item">
+      <i class="bi bi-hourglass-split"></i> My Requests
+    </a>
+    <a href="{{ url_for('ngo.collections') }}" class="sidebar-nav-item active-orange">
+      <i class="bi bi-calendar-check"></i> Collection History
+    </a>
+  </aside>
+
+  <main class="dashboard-main">
+    <div class="mb-4 pb-3 border-bottom" style="border-color: var(--border-color) !important;">
+      <h2 class="fw-bold text-white mb-1">Collection & Distribution History</h2>
+      <p class="text-secondary small mb-0">Record of food received from donors and distributed to community beneficiaries.</p>
+    </div>
+
+    <div class="fs-card p-4">
+      <div class="table-responsive">
+        <table class="table-fs">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Food Item</th>
+              <th>Donor Provider</th>
+              <th>Quantity Received</th>
+              <th>Pickup Location</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if collections %}
+              {% for item in collections %}
+                <tr>
+                  <td>{{ item.collected_at | format_datetime if item.collected_at else item.updated_at | format_datetime }}</td>
+                  <td class="fw-bold text-white">{{ item.donation_title }}</td>
+                  <td>{{ item.donor_name }}</td>
+                  <td class="text-warning fw-bold">{{ item.requested_quantity }} {{ item.unit }}</td>
+                  <td class="small text-secondary">{{ item.pickup_address }}</td>
+                  <td><span class="{{ item.status | status_badge }}">{{ item.status }}</span></td>
+                </tr>
+              {% endfor %}
+            {% else %}
+              <tr>
+                <td colspan="6" class="text-center py-5 text-secondary">
+                  No completed collections recorded yet.
+                </td>
+              </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
