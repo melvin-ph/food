@@ -179,7 +179,10 @@ The login screen includes one-click buttons to instantly fill and sign into each
 | **Recipient** | `user@foodshare.com` | `User123!` | `/recipient/dashboard` |
 | **Administrator** | `admin@foodshare.com` | `Admin123!` | `/admin/dashboard` |
 
+> For comprehensive details on role permissions and demo profiles, see [CREDENTIALS.md](CREDENTIALS.md).
+
 ---
+
 
 ## 8. Automated End-to-End Testing
 
